@@ -7,10 +7,16 @@ import Pagination from "./components/Pagination";
 import Popup from "./components/Popup";
 import ModifyBook from "./components/ModifyBook";
 import { BookData } from "./redux/booksSlice";
-import { handleShowPopup, setTitle } from "./redux/popupSlice";
+import {
+  handleShowPopup,
+  selectMobileView,
+  setMobileView,
+  setTitle,
+} from "./redux/popupSlice";
 import { useEffect } from "react";
 import { useAddBookMutation, useGetBooklistQuery } from "./redux/apiSlice";
 import Alert from "./components/Alert";
+import { handleHideAlert } from "./redux/alertSlice";
 
 export default function Home() {
   const booklistRes = useGetBooklistQuery();
@@ -38,56 +44,75 @@ export default function Home() {
     setCurrentPage(newPage);
   };
 
-  // State for controlling the visibility of the popup
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-
   // Function to open the popup
   const openPopup = () => {
     // setIsPopupOpen(true);
     dispatch(handleShowPopup({ type: "add" }));
   };
+  const mobileView = useAppSelector(selectMobileView);
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640 && !mobileView) {
+        // Hide the component if browser width is less than 640px
+        // You can use state to conditionally render or directly return null
+        // For this example, let's set a state
+        dispatch(setMobileView(true));
+      } else if (window.innerWidth > 640 && mobileView) {
+        dispatch(setMobileView(false));
+      }
+    };
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
 
-  // Function to close the popup
-  const closePopup = () => {
-    setIsPopupOpen(false);
-  };
+    // Call handleResize initially
+    handleResize();
+
+    // Remove event listener on component unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, [mobileView]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between pb-8">
+    <main className="flex min-h-screen flex-col items-center justify-between py-8 px-6 sm:px-10 md:px-20 lg:px-40 xl:px-60">
       <Alert />
-      <div className="flex flex-col w-full md:w-4/5 lg:w-2/3 h-fit border border-gray-200 rounded-lg">
-        <div className="flex justify-between items-center p-8">
-          <div className="flex flex-col text-h4">All books in store</div>
-          <div className="flex">
-            <button
-              className="primary-btn flex gap-2 items-center"
-              onClick={openPopup}
-            >
-              <svg
-                className="w-4 h-4 text-gray-700 dark:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 12h14m-7 7V5"
-                />
-              </svg>
-              Add New Book
-            </button>
+      <div className="flex flex-col w-full h-fit border border-gray-200 rounded-lg">
+        <div className="flex justify-between items-center p-4 sm:p-8 border-b">
+          <div
+            className={`flex flex-col ${mobileView ? "text-h6" : "text-h4"}`}
+          >
+            All books in store
           </div>
+          <button
+            className="primary-btn w-fit flex gap-2 p-2 items-center"
+            onClick={openPopup}
+          >
+            <svg
+              className="w-4 h-4 text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 12h14m-7 7V5"
+              />
+            </svg>
+            {mobileView ? "Add Book" : "Add New Book"}
+          </button>
         </div>
-        <div className="w-full grid grid-cols-11 md:gap-6 lg:gap-10 bg-gray-100 py-4 md:px-4 lg:px-8 font-inter text-cap2 text-gray-600 justify-start">
-          <div className="col-span-5">Book</div>
-          <div className="col-span-2">Author</div>
-          <div className="col-span-2">Category</div>
-          <div>Price</div>
-        </div>
+        {mobileView ? null : (
+          <div className="w-full grid grid-cols-11 sm:gap-4 md:gap-5 lg:gap-8 bg-gray-100 py-4 sm:px-4 md:px-5 lg:px-8 text-gray-600 justify-start">
+            <div className="grid col-span-10 grid-cols-subgrid grid-cols-10 sm:gap-4 md:gap-2 lg:gap-4 items-center text-left sm:text-body4 lg:text-body3">
+              <div className="col-span-5">Book</div>
+              <div className="col-span-2">Author</div>
+              <div className="col-span-2">Category</div>
+              <div>Price</div>
+            </div>
+          </div>
+        )}
         {booksOnPage.map((book: BookData) => (
           <BookInfoRow key={book.isbn} book={book} />
         ))}

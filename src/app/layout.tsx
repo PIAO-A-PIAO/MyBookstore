@@ -18,6 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <title>My Bookstore</title>
       <body className={inter.className}>
         <ReduxProvider>
           <Header />

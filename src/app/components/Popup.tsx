@@ -34,8 +34,8 @@ const Popup: React.FC<PopupProps> = ({ children }) => {
     dispatch(handleHidePopup());
   };
   return showPopup ? (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="bg-white flex flex-col w-full lg:w-1/2 rounded-lg p-8 gap-8">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 px-4 sm:px-20 md:px-40 lg:px-60 xl:px-80">
+      <div className="bg-white flex flex-col w-full rounded-lg p-8 gap-8">
         <div className="w-full h-fit flex justify-between">
           <p className="text-h4">{title}</p>
           <button onClick={onClose}>

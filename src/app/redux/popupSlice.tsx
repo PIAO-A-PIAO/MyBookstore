@@ -7,6 +7,7 @@ interface PopupState {
   currentBook: BookData | null;
   title: string;
   type: string;
+  mobileView: boolean;
 }
 
 const initialState: PopupState = {
@@ -14,6 +15,7 @@ const initialState: PopupState = {
   currentBook: null,
   title: "",
   type: "",
+  mobileView: false,
 };
 
 interface PopupProps {
@@ -25,6 +27,9 @@ export const popupSlice = createSlice({
   name: "popup",
   initialState,
   reducers: {
+    setMobileView: (state, action: PayloadAction<boolean>) => {
+      state.mobileView = action.payload;
+    },
     setTitle: (state, action: PayloadAction<string>) => {
       state.title = action.payload;
     },
@@ -50,9 +55,10 @@ export const selectShowPopup = (state: RootState) => state.popup.showPopup;
 export const selectTitle = (state: RootState) => state.popup.title;
 export const selectCurrentBook = (state: RootState) => state.popup.currentBook;
 export const selectType = (state: RootState) => state.popup.type;
+export const selectMobileView = (state: RootState) => state.popup.mobileView;
 
 // Export actions
-export const { setCurrentBook, handleHidePopup, handleShowPopup, setTitle } =
+export const { setCurrentBook, handleHidePopup, handleShowPopup, setTitle, setMobileView } =
   popupSlice.actions;
 
 // Export reducer
