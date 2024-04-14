@@ -11,7 +11,11 @@ export function isValidISBN(isbn: string): boolean {
   return isbnRegex.test(cleanedISBN);
 }
 
-export function verifyBookForm(bookData: BookData, books: BookData[]) {
+export function verifyBookForm(
+  bookData: BookData,
+  books: BookData[],
+  type: string
+) {
   const errors: { [key: string]: string | null } = {};
 
   if (!bookData.name.trim()) {
@@ -20,7 +24,11 @@ export function verifyBookForm(bookData: BookData, books: BookData[]) {
 
   if (!isValidISBN(bookData.isbn)) {
     errors.isbn = "Invalid ISBN format";
-  } else if (books.some((book: BookData) => book.isbn === bookData.isbn)) {
+  }
+  if (
+    type === "add" &&
+    books.some((book: BookData) => book.isbn === bookData.isbn)
+  ) {
     errors.general = "Book with this ISBN already exists";
   }
 
@@ -109,4 +117,11 @@ export function objAllFilled(obj: any) {
     }
   }
   return true; // Return true if all values are filled
+}
+
+export function trimFileName(name: string): string {
+  if (name.length <= 20) {
+    return name;
+  }
+  return name.substring(0, 18) + "...";
 }

@@ -3,14 +3,18 @@ import { useAppDispatch, useAppSelector } from "../redux/store";
 import { handleHideAlert, selectAlertProps } from "../redux/alertSlice";
 
 function Alert() {
-  const { color, message, showAlert } = useAppSelector(selectAlertProps);
+  const { success, message, showAlert } = useAppSelector(selectAlertProps);
   const dispatch = useAppDispatch();
+
   const onHideAlert = () => {
     dispatch(handleHideAlert());
   };
+
   return showAlert ? (
     <div
-      className={`fixed inset-0 z-10 top-2 rounded-md justify-self-center flex w-fit w-max-1/3 h-fit gap-2 p-4 bg-${color} text-white`}
+      className={`fixed z-10 top-2 rounded-md justify-self-center flex w-fit w-max-1/3 h-fit gap-2 p-4 text-white ${
+        success ? "bg-blue-cta" : "bg-red-error"
+      }`}
     >
       <div>{message}</div>
       <button onClick={onHideAlert}>

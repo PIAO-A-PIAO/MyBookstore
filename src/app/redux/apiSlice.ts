@@ -11,7 +11,7 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-export const apiSlice = createApi({
+export const apiSlice:any = createApi({
   baseQuery,
   tagTypes: ["booklist"],
   endpoints: (builder) => ({
@@ -38,8 +38,21 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["booklist"],
     }),
+    editBook: builder.mutation<any, any>({
+      query: (input) => ({
+        url: "/edit-book",
+        method: "POST",
+        body: { ...input },
+      }),
+      invalidatesTags: ["booklist"],
+    }),
   }),
 });
 
 // Destructure the generated hooks
-export const { useGetBooklistQuery, useAddBookMutation, useDeleteBookMutation } = apiSlice;
+export const {
+  useGetBooklistQuery,
+  useAddBookMutation,
+  useDeleteBookMutation,
+  useEditBookMutation,
+} = apiSlice;

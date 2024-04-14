@@ -1,25 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAppDispatch } from "../redux/store";
 import { handleShowPopup, setCurrentBook } from "../redux/popupSlice";
 import { BookData } from "../redux/booksSlice";
+
 interface BookInfoRowProps {
   book: BookData;
 }
 
 export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
   const dispatch = useAppDispatch();
+  const [isInfoButtonHovered, setIsInfoButtonHovered] = useState(false);
+
   const onEdit = () => {
-    dispatch(setCurrentBook(book));
-    dispatch(handleShowPopup({ type: "edit", title: book.name }));
+    dispatch(handleShowPopup({ type: "edit", book: book }));
   };
 
   const onDelete = () => {
+    dispatch(handleShowPopup({ type: "delete", book: book}));
   };
+
   return (
-    <div className="hover:bg-gray-50 grid grid-cols-11 md:gap-6 lg:gap-10 items-center justify-start border-b-2 border-b-gray-200 py-2 md:px-4 lg:px-8">
+    <div
+      id="container"
+      className={`${
+        isInfoButtonHovered ? "bg-gray-50" : ""
+      } grid grid-cols-11 md:gap-6 lg:gap-10 items-center justify-start border-b-2 border-b-gray-200 py-4 md:px-4 lg:px-8`}
+    >
       <button
+        id="info"
         onClick={onEdit}
         className="grid col-span-10 grid-cols-subgrid grid-cols-10 md:gap-6 lg:gap-10 items-center text-left"
+        onMouseEnter={() => setIsInfoButtonHovered(true)}
+        onMouseLeave={() => setIsInfoButtonHovered(false)}
       >
         <div className="flex col-span-5 items-center justify-start gap-8 mb-1">
           <img
@@ -36,8 +48,9 @@ export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
       </button>
       <div className="flex gap justify-end">
         <button
+          id="delete"
           onClick={onDelete}
-          className="flex items-center justify-center w-8 h-8 lg:w-10 lg:h-10 border border-gray-200 rounded-md"
+          className="flex hover:bg-gray-50 items-center justify-center w-8 h-8 lg:w-10 lg:h-10 border border-gray-200 rounded-md bg-white"
         >
           <svg
             className="w-4 h-4 lg:w-6 lg:h-6 text-gray-800"
@@ -50,9 +63,9 @@ export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
           >
             <path
               stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
             />
           </svg>

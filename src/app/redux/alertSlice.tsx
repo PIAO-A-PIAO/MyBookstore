@@ -4,18 +4,18 @@ import { BookData } from "./booksSlice";
 
 interface AlertState {
   showAlert: boolean;
-  color: string;
+  success: boolean;
   message: string;
 }
 
 const initialState: AlertState = {
   showAlert: false,
-  color: "blue-cta",
+  success: true,
   message: "",
 };
 
 interface AlertProps {
-  color: string;
+  success: boolean;
   message: string;
 }
 
@@ -24,7 +24,7 @@ export const alertSlice = createSlice({
   initialState,
   reducers: {
     handleShowAlert: (state, action: PayloadAction<AlertProps>) => {
-      state.color = action.payload.color;
+      state.success = action.payload.success;
       state.message = action.payload.message;
       state.showAlert = true;
     },

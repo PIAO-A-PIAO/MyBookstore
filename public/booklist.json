@@ -1,6 +1,7 @@
 [
   {
-    "isbn": "1",
+    "bookId": "1",
+    "isbn": "9780743277332",
     "name": "The Great Gatsby",
     "price": "10.99",
     "category": "Fiction",
@@ -8,7 +9,8 @@
     "image": "/assets/TheGreatGatsby.jpg"
   },
   {
-    "isbn": "2",
+    "bookId": "2",
+    "isbn": "9780061120084",
     "name": "To Kill a Mockingbird",
     "price": "12.5",
     "category": "Fiction",
@@ -16,7 +18,8 @@
     "image": "/assets/ToKillAMockingbird.jpg"
   },
   {
-    "isbn": "3",
+    "bookId": "3",
+    "isbn": "9780451524935",
     "name": "1984",
     "price": "9.99",
     "category": "Science Fiction",
@@ -24,7 +27,8 @@
     "image": "/assets/1984.jpg"
   },
   {
-    "isbn": "4",
+    "bookId": "4",
+    "isbn": "9780316769488",
     "name": "The Catcher in the Rye",
     "price": "11.25",
     "category": "Fiction",
@@ -32,7 +36,8 @@
     "image": "/assets/TheCatcherInTheRye.jpg"
   },
   {
-    "isbn": "5",
+    "bookId": "5",
+    "isbn": "9780141439518",
     "name": "Pride and Prejudice",
     "price": "8.75",
     "category": "Romance",
@@ -40,7 +45,8 @@
     "image": "/assets/PrideAndPrejudice.jpg"
   },
   {
-    "isbn": "6",
+    "bookId": "6",
+    "isbn": "9780547928227",
     "name": "The Hobbit",
     "price": "15.99",
     "category": "Fantasy",
@@ -48,7 +54,8 @@
     "image": "/assets/TheHobbit.jpg"
   },
   {
-    "isbn": "7",
+    "bookId": "7",
+    "isbn": "9780545010221",
     "name": "The Lord of the Rings",
     "price": "20.99",
     "category": "Fantasy",
@@ -56,7 +63,8 @@
     "image": "/assets/TheLordOfTheRings.jpg"
   },
   {
-    "isbn": "8",
+    "bookId": "8",
+    "isbn": "9781408855652",
     "name": "Harry Potter and the Philosopher's Stone",
     "price": "18.5",
     "category": "Fantasy",
@@ -64,7 +72,8 @@
     "image": "/assets/PhilosophersStone.jpg"
   },
   {
-    "isbn": "9",
+    "bookId": "9",
+    "isbn": "9780747586461",
     "name": "Harry Potter and the Chamber of Secrets",
     "price": "19.75",
     "category": "Fantasy",
@@ -72,7 +81,8 @@
     "image": "/assets/ChamberOfSecrets.jpg"
   },
   {
-    "isbn": "10",
+    "bookId": "10",
+    "isbn": "9780439139595",
     "name": "Harry Potter and the Prisoner of Azkaban",
     "price": "21.25",
     "category": "Fantasy",
@@ -80,7 +90,8 @@
     "image": "/assets/PrisonerOfAzkaban.jpg"
   },
   {
-    "isbn": "11",
+    "bookId": "11",
+    "isbn": "9780439139601",
     "name": "Harry Potter and the Goblet of Fire",
     "price": "22.99",
     "category": "Fantasy",
@@ -88,7 +99,8 @@
     "image": "/assets/GobletOfFire.jpg"
   },
   {
-    "isbn": "12",
+    "bookId": "12",
+    "isbn": "9780439358071",
     "name": "Harry Potter and the Order of the Phoenix",
     "price": "24.5",
     "category": "Fantasy",
@@ -96,7 +108,8 @@
     "image": "/assets/OrderOfThePhoenix.jpg"
   },
   {
-    "isbn": "13",
+    "bookId": "13",
+    "isbn": "9780439785969",
     "name": "Harry Potter and the Half-Blood Prince",
     "price": "25.75",
     "category": "Fantasy",
@@ -104,7 +117,8 @@
     "image": "/assets/HalfBloodPrince.jpg"
   },
   {
-    "isbn": "14",
+    "bookId": "14",
+    "isbn": "9780545139700",
     "name": "Harry Potter and the Deathly Hallows",
     "price": "28.25",
     "category": "Fantasy",
@@ -112,7 +126,8 @@
     "image": "/assets/DeathlyHallows.jpg"
   },
   {
-    "isbn": "15",
+    "bookId": "15",
+    "isbn": "9780060764883",
     "name": "The Chronicles of Narnia: The Lion, the Witch and the Wardrobe",
     "price": "17.99",
     "category": "Fantasy",
@@ -120,7 +135,8 @@
     "image": "/assets/TheLion.jpg"
   },
   {
-    "isbn": "16",
+    "bookId": "16",
+    "isbn": "9780064405041",
     "name": "The Chronicles of Narnia: Prince Caspian",
     "price": "16.25",
     "category": "Fantasy",
@@ -128,11 +144,20 @@
     "image": "/assets/PrinceCaspian.jpg"
   },
   {
-    "isbn": "17",
+    "bookId": "17",
+    "isbn": "9780064471077",
     "name": "The Chronicles of Narnia: The Voyage of the Dawn Treader",
     "price": "16.99",
     "category": "Fantasy",
     "author": "C.S. Lewis",
     "image": "/assets/TheVoyage.jpg"
+  },
+  {
+    "isbn": "0743297334",
+    "name": "The Sun Also Rises",
+    "author": "Ernest Hemingway",
+    "category": "Fiction",
+    "price": "24",
+    "image": "/assets/TheSunAlsoRises.jpg"
   }
 ]

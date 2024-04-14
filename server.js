@@ -60,9 +60,8 @@ app.post("/add-book", (req, res) => {
 
 app.post("/delete-book", (req, res) => {
   try {
-    const { isbn } = req.body; // Assuming the request body contains the ISBN of the book to be deleted
-    console.log(isbn);
-    return;
+    const { bookId } = req.body; // Assuming the request body contains the bookId of the book to be deleted
+
     // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
     let bookList = [];
@@ -70,16 +69,12 @@ app.post("/delete-book", (req, res) => {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
 
-    // Find the index of the book with the specified ISBN
-    const index = bookList.findIndex((book) => book.isbn === isbn);
+    // Find the index of the book with the specified bookId
+    const index = bookList.findIndex((book) => book.bookId === bookId);
 
     if (index !== -1) {
       // Extract the path to the image of the book
-      const imagePath = path.join(
-        __dirname,
-        "public",
-        basename(bookList[index].image)
-      );
+      const imagePath = path.join(__dirname, "public", bookList[index].image);
 
       // Delete the book from the booklist
       bookList.splice(index, 1);
@@ -104,6 +99,51 @@ app.post("/delete-book", (req, res) => {
     }
   } catch (error) {
     console.error("Error deleting book:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/edit-book", (req, res) => {
+  try {
+    const { updatedBook, coverImage } = req.body; // Assuming the request body contains the updated book data
+    // Read the existing booklist.json file
+    const bookListPath = path.join(__dirname, "public", "booklist.json");
+    let bookList = [];
+    if (fs.existsSync(bookListPath)) {
+      bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
+    }
+
+    // Find the index of the book with the specified bookId
+    const index = bookList.findIndex(
+      (book) => book.bookId === updatedBook.bookId
+    );
+
+    if (index !== -1) {
+      // Update the book in the booklist
+      if (coverImage) {
+        const imagePath = path.join(__dirname, "public", coverImage);
+        fs.unlink(imagePath, (err) => {
+          if (err) {
+            console.error("Error deleting image:", err);
+            // Handle error appropriately
+          } else {
+            console.log("Image deleted successfully");
+            // Image deleted successfully
+          }
+        });
+      }
+
+      bookList[index] = updatedBook;
+
+      // Write the updated book list back to file
+      fs.writeFileSync(bookListPath, JSON.stringify(bookList, null, 2));
+
+      res.status(200).json({ message: "Book updated successfully!" });
+    } else {
+      res.status(404).json({ error: "Book not found!" });
+    }
+  } catch (error) {
+    console.error("Error updating book:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
