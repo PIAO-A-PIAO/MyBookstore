@@ -1,16 +1,28 @@
+"use client";
 import React from "react";
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import {
+  handleHidePopup,
+  selectShowPopup,
+  selectTitle,
+  selectType,
+} from "../redux/popupSlice";
+import ModifyBook from "./ModifyBook";
+import DeleteBook from "./DeleteBook";
 
 interface PopupProps {
-  title: string;
-  isOpen: boolean;
-  onClose: () => void;
   children: React.ReactNode; // Declaring type of children
 }
 
-const Popup: React.FC<PopupProps> = ({ title, isOpen, onClose, children }) => {
-  if (!isOpen) return null;
-
-  return (
+const Popup: React.FC<PopupProps> = ({ children }) => {
+  const showPopup = useAppSelector(selectShowPopup);
+  const title = useAppSelector(selectTitle);
+  const type = useAppSelector(selectType);
+  const dispatch = useAppDispatch();
+  const onClose = () => {
+    dispatch(handleHidePopup());
+  };
+  return showPopup ? (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div className="bg-white flex flex-col w-full lg:w-1/2 rounded-lg p-8 gap-8">
         <div className="w-full h-fit flex justify-between">
@@ -32,10 +44,10 @@ const Popup: React.FC<PopupProps> = ({ title, isOpen, onClose, children }) => {
             </svg>
           </button>
         </div>
-        {children}
+        {type === "delete" ? <DeleteBook /> : <ModifyBook />}
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default Popup;

@@ -51,6 +51,9 @@ body {
   .primary-btn {
     @apply text-white bg-blue-cta hover:bg-blue-dark focus:ring-4 focus:outline-none focus:ring-blue-light font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center;
   }
+  .primary-btn-disabled {
+    @apply text-white bg-blue-cta opacity-50 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center;
+  }
   .secondary-btn {
     @apply text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-light font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center;
   }

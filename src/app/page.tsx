@@ -1,16 +1,25 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "./api/store";
-import { selectBooks, setBooks } from "./api/booksSlice";
-import booklist from "../../public/booklist";
+import { useAppDispatch, useAppSelector } from "./redux/store";
+import { selectBooks, setBooks } from "./redux/booksSlice";
 import { BookInfoRow } from "./components/BookInfoRow";
 import { useState } from "react";
 import Pagination from "./components/Pagination";
 import Popup from "./components/Popup";
-import AddBook from "./components/AddBook";
+import ModifyBook from "./components/ModifyBook";
+import { BookData } from "./redux/booksSlice";
+import { handleShowPopup, setTitle } from "./redux/popupSlice";
+import { useEffect } from "react";
+import { useAddBookMutation, useGetBooklistQuery } from "./redux/apiSlice";
+import Alert from "./components/Alert";
 
 export default function Home() {
+  const booklistRes = useGetBooklistQuery();
   const dispatch = useAppDispatch();
-  dispatch(setBooks(booklist));
+  useEffect(() => {
+    if (booklistRes?.currentData) {
+      dispatch(setBooks(booklistRes.currentData));
+    }
+  }, [booklistRes]);
   const reduxBooklist = useAppSelector(selectBooks);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8; // Number of books per page
@@ -34,7 +43,8 @@ export default function Home() {
 
   // Function to open the popup
   const openPopup = () => {
-    setIsPopupOpen(true);
+    // setIsPopupOpen(true);
+    dispatch(handleShowPopup({ type: "add", title: "Add New Book" }));
   };
 
   // Function to close the popup
@@ -48,7 +58,10 @@ export default function Home() {
         <div className="flex justify-between items-center p-8">
           <div className="flex flex-col text-h4">All books in store</div>
           <div className="flex">
-            <button className="primary-btn flex gap-2 items-center" onClick={openPopup}>
+            <button
+              className="primary-btn flex gap-2 items-center"
+              onClick={openPopup}
+            >
               <svg
                 className="w-4 h-4 text-gray-700 dark:text-white"
                 aria-hidden="true"
@@ -68,13 +81,13 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="w-full grid grid-cols-12 md:gap-6 lg:gap-10 bg-gray-100 py-4 md:px-4 lg:px-8 font-inter text-cap2 text-gray-600 justify-start">
+        <div className="w-full grid grid-cols-11 md:gap-6 lg:gap-10 bg-gray-100 py-4 md:px-4 lg:px-8 font-inter text-cap2 text-gray-600 justify-start">
           <div className="col-span-5">Book</div>
           <div className="col-span-2">Author</div>
           <div className="col-span-2">Category</div>
           <div>Price</div>
         </div>
-        {booksOnPage.map((book) => (
+        {booksOnPage.map((book: BookData) => (
           <BookInfoRow key={book.isbn} book={book} />
         ))}
         <Pagination
@@ -83,11 +96,10 @@ export default function Home() {
           onPageChange={handlePageChange}
         />
       </div>
-      <Popup title="Add New Book" isOpen={isPopupOpen} onClose={closePopup}>
-        {/* Add form or content for adding a new book */}
-        <AddBook onCancel={closePopup} />
-        {/* Add form inputs or other content here */}
+      <Popup>
+        <ModifyBook />
       </Popup>
+      <Alert />
     </main>
   );
 }
