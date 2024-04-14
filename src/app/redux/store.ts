@@ -38,23 +38,17 @@ const popupPersistConfig = {
   whitelist: ["popup"],
 };
 
-const alertPersistConfig = {
-  key: "alert",
-  storage: storage,
-  whitelist: ["alert"],
-};
-
 const rootPersistConfig = {
   key: "root",
   storage: storage,
-  whitelist: ["popup", "books", "alert"],
+  whitelist: ["popup", "books"],
 };
 
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,
   books: persistReducer(booksPersistConfig, booksReducer),
   popup: persistReducer(popupPersistConfig, popupReducer),
-  alert: persistReducer(alertPersistConfig, alertReducer),
+  alert: alertReducer
 });
 
 export const store = configureStore({

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { handleHideAlert, selectAlertProps } from "../redux/alertSlice";
 
@@ -9,6 +9,14 @@ function Alert() {
   const onHideAlert = () => {
     dispatch(handleHideAlert());
   };
+
+  useEffect(() => {
+    if (showAlert) {
+      setTimeout(() => {
+        onHideAlert();
+      }, 10000);
+    }
+  }, [showAlert]);
 
   return showAlert ? (
     <div

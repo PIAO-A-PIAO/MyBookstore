@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../redux/store";
 import {
   handleHidePopup,
   selectCurrentBook,
+  selectMobileView,
   selectType,
 } from "../redux/popupSlice";
 import { BookData, selectBooks } from "../redux/booksSlice";
@@ -22,6 +23,7 @@ const ModifyBook: React.FC = () => {
   const book = useAppSelector(selectCurrentBook);
   const books = useAppSelector(selectBooks);
   const [enableSubmit, setEnableSubmit] = useState(false);
+  const mobileView = useAppSelector(selectMobileView);
 
   const dispatch = useAppDispatch();
   const onHidePopup = () => {
@@ -153,7 +155,7 @@ const ModifyBook: React.FC = () => {
   }, [bookData]);
 
   return (
-    <div id="popup_content" className="w-full flex flex-col gap-2">
+    <div id="popup_content" className={`w-full flex flex-col gap-2 ${mobileView?"h-60 overflow-y-scroll":""}`}>
       {errors.general ? (
         <p id="error_general" className="text-red-error text-body4 h-3">
           {errors.general}
@@ -161,9 +163,12 @@ const ModifyBook: React.FC = () => {
       ) : (
         <div className="h-3" />
       )}
-      <div id="container_1" className="flex w-full gap-8">
+      <div
+        id="container_1"
+        className={`flex ${mobileView ? "flex-col gap-2" : "gap-8"} w-full`}
+      >
         {cover ? (
-          <div id="cover_container" className="flex flex-col w-1/2 py-3">
+          <div id="cover_container" className={`flex flex-col ${mobileView?"w-full":"w-1/2"} py-3`}>
             <div
               id="cover_button"
               className="secondary-btn hover:bg-white w-full h-full flex flex-col items-center gap-3 p-4"
@@ -212,7 +217,7 @@ const ModifyBook: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="flex flex-col py-3 w-1/2">
+          <div className={`flex flex-col ${mobileView?"w-full":"w-1/2"} py-3`}>
             <button
               onClick={onImageChange}
               className={`secondary-btn w-full h-full flex flex-col items-center justify-center gap-4 ${
@@ -249,7 +254,7 @@ const ModifyBook: React.FC = () => {
             )}
           </div>
         )}
-        <div className="flex flex-col w-1/2">
+        <div className={`flex flex-col ${mobileView?"w-full":"w-1/2"}`}>
           <label className="label w-full gap-1">
             <p>
               <span className="text-red-error">*</span>Name:
@@ -367,15 +372,15 @@ const ModifyBook: React.FC = () => {
       </div>
       <div className="w-full flex justify-end">
         <div className="w-fit flex gap-4">
-          <button className="secondary-btn" type="button" onClick={onHidePopup}>
+          <button className={`secondary-btn ${mobileView?"p-2":""}`} type="button" onClick={onHidePopup}>
             Cancel
           </button>
           {enableSubmit ? (
-            <button className="primary-btn" type="button" onClick={onSubmit}>
+            <button className={`primary-btn ${mobileView?"p-2":""}`}  type="button" onClick={onSubmit}>
               {type === "edit" ? "Edit Book" : "Add Book"}
             </button>
           ) : (
-            <div className="primary-btn-disabled">
+            <div className={`primary-btn-disabled ${mobileView?"p-2":""}`} >
               {type === "edit" ? "Edit Book" : "Add Book"}
             </div>
           )}
