@@ -16,8 +16,19 @@ interface PopupProps {
 
 const Popup: React.FC<PopupProps> = ({ children }) => {
   const showPopup = useAppSelector(selectShowPopup);
-  const title = useAppSelector(selectTitle);
   const type = useAppSelector(selectType);
+  const title = (() => {
+    switch (type) {
+      case "add":
+        return "Add New Book";
+      case "edit":
+        return "Edit Book";
+      case "delete":
+        return "Delete Book";
+      default:
+        return "";
+    }
+  })();
   const dispatch = useAppDispatch();
   const onClose = () => {
     dispatch(handleHidePopup());

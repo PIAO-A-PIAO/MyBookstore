@@ -44,7 +44,7 @@ export default function Home() {
   // Function to open the popup
   const openPopup = () => {
     // setIsPopupOpen(true);
-    dispatch(handleShowPopup({ type: "add", title: "Add New Book" }));
+    dispatch(handleShowPopup({ type: "add" }));
   };
 
   // Function to close the popup
@@ -54,6 +54,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between pb-8">
+      <Alert />
       <div className="flex flex-col w-full md:w-4/5 lg:w-2/3 h-fit border border-gray-200 rounded-lg">
         <div className="flex justify-between items-center p-8">
           <div className="flex flex-col text-h4">All books in store</div>
@@ -99,7 +100,6 @@ export default function Home() {
       <Popup>
         <ModifyBook />
       </Popup>
-      <Alert />
     </main>
   );
 }

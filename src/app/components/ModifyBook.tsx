@@ -1,9 +1,5 @@
 import React, { useState, useRef, ChangeEvent, useEffect } from "react";
-import {
-  equalObj,
-  formatFileSize,
-  objAllFilled,
-} from "../utils";
+import { equalObj, formatFileSize, objAllFilled, trimFileName } from "../utils";
 import { categories } from "../../../public/categories";
 import { verifyBookForm } from "../utils";
 import { useAppDispatch, useAppSelector } from "../redux/store";
@@ -15,11 +11,13 @@ import {
 import { BookData, selectBooks } from "../redux/booksSlice";
 import { getFileFromPath } from "../utils";
 import axios from "axios";
-import { useAddBookMutation } from "../redux/apiSlice";
+import { useAddBookMutation, useEditBookMutation } from "../redux/apiSlice";
 import { handleShowAlert } from "../redux/alertSlice";
 
 const ModifyBook: React.FC = () => {
   const [addBook, addBookRes] = useAddBookMutation();
+  const [editBook, editBookRes] = useEditBookMutation();
+  const [coverChanged, setCoverChanged] = useState(false);
   const type = useAppSelector(selectType);
   const book = useAppSelector(selectCurrentBook);
   const books = useAppSelector(selectBooks);
@@ -53,7 +51,7 @@ const ModifyBook: React.FC = () => {
   );
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
   const onSubmit = async () => {
-    const formErrors = verifyBookForm(bookData, books);
+    const formErrors = verifyBookForm(bookData, books, type);
     setErrors(formErrors);
     if (Object.keys(formErrors).length === 0) {
       if (type === "add" && cover) {
@@ -61,17 +59,17 @@ const ModifyBook: React.FC = () => {
         formData.append("cover", cover);
         axios.post("http://localhost:4000/add-cover", formData).catch((error) =>
           handleShowAlert({
-            color: "red-error",
+            success: false,
             message: "Error adding book",
           })
         );
         try {
           // Execute the mutation
-          const result = await addBook(bookData).unwrap();
+          await addBook(bookData).unwrap();
           // Show success alert
           dispatch(
             handleShowAlert({
-              color: "blue-cta",
+              success: true,
               message: "Book added successfully!",
             })
           );
@@ -79,12 +77,46 @@ const ModifyBook: React.FC = () => {
         } catch (error) {
           dispatch(
             handleShowAlert({
-              color: "red-error",
+              success: false,
               message: "Error adding book!",
             })
           );
         }
       } else if (type === "edit") {
+        if (coverChanged && cover) {
+          const formData = new FormData();
+          formData.append("cover", cover);
+          axios
+            .post("http://localhost:4000/add-cover", formData)
+            .catch((error) =>
+              handleShowAlert({
+                success: false,
+                message: "Error editing book",
+              })
+            );
+        }
+        try {
+          // Execute the mutation
+          await editBook({
+            updatedBook: bookData,
+            coverImage: coverChanged ? book.image : null,
+          }).unwrap();
+          // Show success alert
+          dispatch(
+            handleShowAlert({
+              success: true,
+              message: "Book edited successfully!",
+            })
+          );
+          onHidePopup();
+        } catch (error) {
+          dispatch(
+            handleShowAlert({
+              success: false,
+              message: "Error editing book!",
+            })
+          );
+        }
       }
     }
   };
@@ -100,6 +132,7 @@ const ModifyBook: React.FC = () => {
       // Only handle the first selected file
       const selectedFile = fileList[0];
       setCover(selectedFile);
+      setCoverChanged(true);
       setBookData({ ...bookData, image: `/assets/${selectedFile.name}` });
     }
   };
@@ -120,7 +153,7 @@ const ModifyBook: React.FC = () => {
   }, [bookData]);
 
   return (
-    <div id="popup_content" className="w-full flex flex-col gap-4">
+    <div id="popup_content" className="w-full flex flex-col gap-2">
       {errors.general ? (
         <p id="error_general" className="text-red-error text-body4 h-3">
           {errors.general}
@@ -130,54 +163,47 @@ const ModifyBook: React.FC = () => {
       )}
       <div id="container_1" className="flex w-full gap-8">
         {cover ? (
-          <div id="cover_container" className="flex flex-col w-1/2 gap-1">
+          <div id="cover_container" className="flex flex-col w-1/2 py-3">
             <div
               id="cover_button"
-              className="secondary-btn w-full flex items-center"
+              className="secondary-btn hover:bg-white w-full h-full flex flex-col items-center gap-3 p-4"
             >
-              <div
-                id="inner_container"
-                className="flex w-full py-1 gap-3 items-start"
-              >
-                <div
-                  id="cover_image_container"
-                  className={`h-12 w-8 overflow-hidden drop-shadow-[2px_2px_0px_rgba(0,0,0,0.25)] ${
-                    errors.image ? "border-red-error" : ""
-                  }`}
-                >
-                  <img
-                    className="m-1 object-cover"
-                    src={URL.createObjectURL(cover)}
-                    alt="Book Cover"
-                  />
-                </div>
-                <div
-                  id="cover_info_container"
-                  className="flex flex-col items-start justify-end"
-                >
-                  <p>{cover.name}</p>
-                  <p>{formatFileSize(cover.size)}</p>
-                </div>
+              <div className="w-full h-fit flex justify-end">
+                <button onClick={removeImage}>
+                  <svg
+                    className="h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="3"
+                      d="M6 18L18 6M6 6l12 13"
+                    />
+                  </svg>
+                </button>
               </div>
-              <button
-                onClick={removeImage}
-                className="w-fitz h-full items-start"
+              <div
+                id="cover_image_container"
+                style={{ aspectRatio: "2/3" }}
+                className={`flex w-3/5 items-center overflow-hidden drop-shadow-[8px_8px_0px_rgba(0,0,0,0.25)] ${
+                  errors.image ? "border-red-error" : ""
+                }`}
               >
-                <svg
-                  className="h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="3"
-                    d="M6 18L18 6M6 6l12 13"
-                  />
-                </svg>
-              </button>
+                <img src={URL.createObjectURL(cover)} alt="Book Cover" />
+              </div>
+              <div
+                id="cover_info_container"
+                className="flex flex-col w-3/5 h-fit items-start justify-center overflow-hidden"
+              >
+                <p>{trimFileName(cover.name)}</p>
+                <p className="text-gray-600 text-cap3">
+                  {formatFileSize(cover.size)}
+                </p>
+              </div>
             </div>
             {errors.image ? (
               <p className="text-red-error text-body4 h-3">{errors.image}</p>
@@ -186,10 +212,10 @@ const ModifyBook: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="flex flex-col gap-1 py-1 w-1/2">
+          <div className="flex flex-col py-3 w-1/2">
             <button
               onClick={onImageChange}
-              className={`secondary-btn w-full flex flex-col items-center justify-center ${
+              className={`secondary-btn w-full h-full flex flex-col items-center justify-center gap-4 ${
                 errors.image ? "border-red-error" : ""
               }`}
             >
@@ -223,117 +249,121 @@ const ModifyBook: React.FC = () => {
             )}
           </div>
         )}
-        <label className="label w-1/2 gap-1">
-          <p>
-            <span className="text-red-error">*</span>Name:
-          </p>
-          <input
-            className={`input ${errors.name ? "border-red-error" : ""}`}
-            type="text"
-            name="name"
-            required
-            value={bookData.name}
-            onChange={(e) => setBookData({ ...bookData, name: e.target.value })}
-          />
-          {errors.name ? (
-            <p className="text-red-error text-body4 h-3">{errors.name}</p>
-          ) : (
-            <div className="h-3" />
-          )}
-        </label>
-      </div>
-      <div className="w-full flex gap-8">
-        <label className="label w-1/2 gap-1">
-          <p>
-            <span className="text-red-error">*</span>ISBN:
-          </p>
-          <input
-            className={`input ${errors.isbn ? "border-red-error" : ""}`}
-            type="text"
-            name="isbn"
-            required
-            value={bookData.isbn}
-            onChange={(e) => setBookData({ ...bookData, isbn: e.target.value })}
-          />
-          {errors.isbn ? (
-            <p className="text-red-error text-body4 h-3">{errors.isbn}</p>
-          ) : (
-            <div className="h-3" />
-          )}
-        </label>
-        <label className="label w-1/2 gap-1">
-          <p>
-            <span className="text-red-error">*</span>Author:
-          </p>
-          <input
-            className={`input ${errors.author ? "border-red-error" : ""}`}
-            type="text"
-            name="author"
-            required
-            value={bookData.author}
-            onChange={(e) =>
-              setBookData({ ...bookData, author: e.target.value })
-            }
-          />
-          {errors.author ? (
-            <p className="text-red-error text-body4 h-3">{errors.author}</p>
-          ) : (
-            <div className="h-3" />
-          )}
-        </label>
-      </div>
-      <div className="w-full flex gap-8">
-        <label className="label w-1/2 gap-1">
-          <p>
-            <span className="text-red-error">*</span>Category:
-          </p>
-          <select
-            className={`input ${errors.category ? "border-red-error" : ""}`}
-            name="category"
-            required
-            value={bookData.category}
-            onChange={(e) =>
-              setBookData({ ...bookData, category: e.target.value })
-            }
-          >
-            <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option value={category}>{category}</option>
-            ))}
-          </select>
-          {errors.category ? (
-            <p className="text-red-error text-body4 h-3">{errors.category}</p>
-          ) : (
-            <div className="h-3" />
-          )}
-        </label>
-        <label className="label w-1/2 gap-1">
-          <p>
-            <span className="text-red-error">*</span>Price:
-          </p>
-          <div
-            className={`input ${
-              errors.price ? "border-red-error" : ""
-            } flex items-center gap-2`}
-          >
-            <p>CAD</p>
+        <div className="flex flex-col w-1/2">
+          <label className="label w-full gap-1">
+            <p>
+              <span className="text-red-error">*</span>Name:
+            </p>
             <input
-              type="number"
-              step={0.01}
-              value={bookData.price}
-              onChange={(e) =>
-                setBookData({ ...bookData, price: e.target.value })
-              }
-              className="w-full p-0 border-none outline-none focus:ring-0 bg-gray-50"
+              className={`input ${errors.name ? "border-red-error" : ""}`}
+              type="text"
+              name="name"
               required
+              value={bookData.name}
+              onChange={(e) =>
+                setBookData({ ...bookData, name: e.target.value })
+              }
             />
-          </div>
-          {errors.price ? (
-            <p className="text-red-error text-body4 h-3 h-3">{errors.price}</p>
-          ) : (
-            <div className="h-3" />
-          )}
-        </label>
+            {errors.name ? (
+              <p className="text-red-error text-body4 h-3">{errors.name}</p>
+            ) : (
+              <div className="h-3" />
+            )}
+          </label>
+          <label className="label w-full gap-1">
+            <p>
+              <span className="text-red-error">*</span>ISBN:
+            </p>
+            <input
+              className={`input ${errors.isbn ? "border-red-error" : ""}`}
+              type="text"
+              name="isbn"
+              required
+              value={bookData.isbn}
+              onChange={(e) =>
+                setBookData({ ...bookData, isbn: e.target.value })
+              }
+            />
+            {errors.isbn ? (
+              <p className="text-red-error text-body4 h-3">{errors.isbn}</p>
+            ) : (
+              <div className="h-3" />
+            )}
+          </label>
+          <label className="label w-full gap-1">
+            <p>
+              <span className="text-red-error">*</span>Author:
+            </p>
+            <input
+              className={`input ${errors.author ? "border-red-error" : ""}`}
+              type="text"
+              name="author"
+              required
+              value={bookData.author}
+              onChange={(e) =>
+                setBookData({ ...bookData, author: e.target.value })
+              }
+            />
+            {errors.author ? (
+              <p className="text-red-error text-body4 h-3">{errors.author}</p>
+            ) : (
+              <div className="h-3" />
+            )}
+          </label>
+          <label className="label w-full gap-1">
+            <p>
+              <span className="text-red-error">*</span>Category:
+            </p>
+            <select
+              className={`input ${errors.category ? "border-red-error" : ""}`}
+              name="category"
+              required
+              value={bookData.category}
+              onChange={(e) =>
+                setBookData({ ...bookData, category: e.target.value })
+              }
+            >
+              <option value="">Select a category</option>
+              {categories.map((category) => (
+                <option value={category}>{category}</option>
+              ))}
+            </select>
+            {errors.category ? (
+              <p className="text-red-error text-body4 h-3">{errors.category}</p>
+            ) : (
+              <div className="h-3" />
+            )}
+          </label>
+          <label className="label w-full gap-1">
+            <p>
+              <span className="text-red-error">*</span>Price:
+            </p>
+            <div
+              className={`input ${
+                errors.price ? "border-red-error" : ""
+              } flex items-center gap-2`}
+            >
+              <p>CAD</p>
+              <input
+                type="number"
+                step={0.01}
+                value={bookData.price}
+                onChange={(e) =>
+                  setBookData({ ...bookData, price: e.target.value })
+                }
+                className="w-full p-0 border-none outline-none focus:ring-0 bg-gray-50"
+                required
+              />
+            </div>
+            {errors.price ? (
+              <p className="text-red-error text-body4 h-3 h-3">
+                {errors.price}
+              </p>
+            ) : (
+              <div className="h-3" />
+            )}
+          </label>
+        </div>
       </div>
       <div className="w-full flex justify-end">
         <div className="w-fit flex gap-4">
@@ -342,10 +372,12 @@ const ModifyBook: React.FC = () => {
           </button>
           {enableSubmit ? (
             <button className="primary-btn" type="button" onClick={onSubmit}>
-              Add Book
+              {type === "edit" ? "Edit Book" : "Add Book"}
             </button>
           ) : (
-            <div className="primary-btn-disabled">Add Book</div>
+            <div className="primary-btn-disabled">
+              {type === "edit" ? "Edit Book" : "Add Book"}
+            </div>
           )}
         </div>
       </div>
