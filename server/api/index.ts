@@ -53,7 +53,7 @@ app.post("/add-book", (req, res) => {
 
     // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
-    let bookList = [];
+    let bookList = <any[]>[];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
@@ -79,7 +79,7 @@ app.post("/delete-book", (req, res) => {
 
     // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
-    let bookList = [];
+    let bookList = <any[]>[];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
@@ -123,7 +123,7 @@ app.post("/edit-book", (req, res) => {
     const { updatedBook, coverImage } = req.body; // Assuming the request body contains the updated book data
     // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
-    let bookList = [];
+    let bookList = <any[]>[];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }

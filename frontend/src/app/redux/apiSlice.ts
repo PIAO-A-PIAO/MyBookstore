@@ -3,6 +3,7 @@ import { BookData } from "./booksSlice";
 import { baseUrl } from "../utils";
 const baseQuery = fetchBaseQuery({
   baseUrl,
+  mode:"cors",
   prepareHeaders: (headers) => {
     headers.set("Accept", "plain/text, application/json");
     headers.set("Content-Type", "application/json");
