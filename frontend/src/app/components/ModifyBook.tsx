@@ -106,14 +106,12 @@ const ModifyBook: React.FC = () => {
         if (coverChanged && cover) {
           const formData = new FormData();
           formData.append("cover", cover);
-          axios
-            .post(baseUrl + "/add-cover", formData)
-            .catch((error) =>
-              handleShowAlert({
-                success: false,
-                message: "Error editing book",
-              })
-            );
+          axios.post(baseUrl + "/add-cover", formData).catch((error) =>
+            handleShowAlert({
+              success: false,
+              message: "Error editing book",
+            })
+          );
         }
         try {
           // Execute the mutation

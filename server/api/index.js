@@ -12,7 +12,7 @@ app.use(express.static("public"));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/assets");
+    cb(null, "api/public/assets");
   },
   filename: (req, file, cb) => {
     console.log(file);
@@ -20,6 +20,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
+app.post("/add-cover", upload.single("cover"), (req, res) => {});
 
 app.get("/", (req, res) => {
   res.send("Server is now running");
@@ -76,14 +77,14 @@ app.post("/add-book", (req, res) => {
 app.post("/delete-book", (req, res) => {
   try {
     const { bookId } = req.body; // Assuming the request body contains the bookId of the book to be deleted
-    console.log(bookId)
+    console.log(bookId);
     // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
     let bookList = [];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
-    console.log(bookList)
+    console.log(bookList);
 
     // Find the index of the book with the specified bookId
     const index = bookList.findIndex((book) => book.bookId === bookId);

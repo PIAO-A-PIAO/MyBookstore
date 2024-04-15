@@ -151,5 +151,14 @@
     "category": "Fantasy",
     "author": "C.S. Lewis",
     "image": "/assets/TheVoyage.jpg"
+  },
+  {
+    "isbn": "0743297334",
+    "name": "The Sun Also Rise",
+    "author": "Ernest Hemingway",
+    "category": "Fiction",
+    "price": "24",
+    "image": "/assets/TheSunAlsoRises.jpg",
+    "bookId": "1da5a158-bcff-41cb-b23a-c878fde573e7"
   }
 ]
