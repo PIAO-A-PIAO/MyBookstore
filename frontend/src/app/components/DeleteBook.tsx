@@ -44,22 +44,26 @@ function DeleteBook() {
           <div
             className={`flex ${
               mobileView ? "flex-col" : ""
-            } w-fit h-fit p-4 gap-4 gap-8 lg:gap-12`}
+            } w-5/6 h-fit gap-4 gap-8 lg:gap-12`}
           >
             <img
               style={{ aspectRatio: "2/3" }}
               src={baseUrl + book.image}
               className={`${
-                mobileView ? "w-2/3" : "w-1/3"
+                mobileView ? "w-2/3" : "w-2/5"
               } self-center h-full drop-shadow-[6px_6px_0px_rgba(0,0,0,0.25)]`}
             />
-            <div className="flex flex-col items-start justify-between">
-              <div className="flex flex-col">
+            <div
+              className={`flex flex-col ${
+                mobileView ? "w-full" : "w-3/5"
+              } items-start justify-between`}
+            >
+              <div className="flex flex-col gap-2">
                 <div className="flex flex-col">
                   <p className="text-gray-600 text-body4 lg:text-body3">
                     {book.isbn}
                   </p>
-                  <p className="text-h4 md:text-h3 text-blue-cta">
+                  <p className="text-h5 md:text-h4 lg:text-h3 text-blue-cta">
                     {book.name}
                   </p>
                 </div>
