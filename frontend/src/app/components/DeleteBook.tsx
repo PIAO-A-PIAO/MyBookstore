@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import {
   handleHidePopup,
@@ -9,15 +9,16 @@ import { useDeleteBookMutation } from "../redux/apiSlice";
 import { handleShowAlert } from "../redux/alertSlice";
 import { baseUrl } from "../utils";
 
-function DeleteBook() {
+const DeleteBook = () => {
   const dispatch = useAppDispatch();
+  const [deleteBook, deleteBookRes] = useDeleteBookMutation();
+  const mobileView = useAppSelector(selectMobileView);
+  const book = useAppSelector(selectCurrentBook);
+
   const onHidePopup = () => {
     dispatch(handleHidePopup());
   };
-  const [deleteBook, deleteBookRes] = useDeleteBookMutation();
-  const mobileView = useAppSelector(selectMobileView);
 
-  const book = useAppSelector(selectCurrentBook);
   const onDelete = async () => {
     try {
       await deleteBook({ bookId: book.bookId }).unwrap();
@@ -37,10 +38,17 @@ function DeleteBook() {
       );
     }
   };
+
   return (
-    <div className="w-full flex flex-col items-center">
-      <div className="w-full flex flex-col items-center justify-center gap-8">
-        <div className="flex w-full items-center justify-center">
+    <div id="delete_container" className="w-full flex flex-col items-center">
+      <div
+        id="info_and_buttons"
+        className="w-full flex flex-col items-center justify-center gap-8"
+      >
+        <div
+          id="info_container"
+          className="flex w-full items-center justify-center"
+        >
           <div
             className={`flex ${
               mobileView ? "flex-col" : ""
@@ -54,12 +62,13 @@ function DeleteBook() {
               } self-center h-full drop-shadow-[6px_6px_0px_rgba(0,0,0,0.25)]`}
             />
             <div
+              id="book_info"
               className={`flex flex-col ${
                 mobileView ? "w-full" : "w-3/5"
               } items-start justify-between`}
             >
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-col">
+              <div id="info_container" className="flex flex-col gap-2">
+                <div id="basic_info" className="flex flex-col">
                   <p className="text-gray-600 text-body4 lg:text-body3">
                     {book.isbn}
                   </p>
@@ -75,8 +84,8 @@ function DeleteBook() {
             </div>
           </div>
         </div>
-        <div className="w-full flex justify-end">
-          <div className="w-fit flex gap-4">
+        <div id="buttons_row" className="w-full flex justify-end">
+          <div id="buttons_container" className="w-fit flex gap-4">
             <button
               className={`secondary-btn ${mobileView ? "p-2" : ""}`}
               type="button"
@@ -96,6 +105,6 @@ function DeleteBook() {
       </div>
     </div>
   );
-}
+};
 
 export default DeleteBook;

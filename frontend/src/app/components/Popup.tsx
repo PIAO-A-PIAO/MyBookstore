@@ -4,19 +4,17 @@ import { useAppDispatch, useAppSelector } from "../redux/store";
 import {
   handleHidePopup,
   selectShowPopup,
-  selectTitle,
   selectType,
 } from "../redux/popupSlice";
 import ModifyBook from "./ModifyBook";
 import DeleteBook from "./DeleteBook";
 
-interface PopupProps {
-  children: React.ReactNode; // Declaring type of children
-}
 
-const Popup: React.FC<PopupProps> = ({ children }) => {
+const Popup = () => {
+  const dispatch = useAppDispatch();
   const showPopup = useAppSelector(selectShowPopup);
   const type = useAppSelector(selectType);
+
   const title = (() => {
     switch (type) {
       case "add":
@@ -29,14 +27,15 @@ const Popup: React.FC<PopupProps> = ({ children }) => {
         return "";
     }
   })();
-  const dispatch = useAppDispatch();
+
   const onClose = () => {
     dispatch(handleHidePopup());
   };
+
   return showPopup ? (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 px-4 sm:px-20 md:px-40 lg:px-60 xl:px-80">
-      <div className="bg-white flex flex-col w-full rounded-lg p-8 gap-8">
-        <div className="w-full h-fit flex justify-between">
+    <div id="popup_container" className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 px-4 sm:px-20 md:px-40 lg:px-60 xl:px-80">
+      <div id="inner_container" className="bg-white flex flex-col w-full rounded-lg p-8 gap-8">
+        <div id="header_container" className="w-full h-fit flex justify-between">
           <p className="text-h4">{title}</p>
           <button onClick={onClose}>
             <svg

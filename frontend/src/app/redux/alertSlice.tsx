@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "./store"; // Assuming you have a store configured
-import { BookData } from "./booksSlice";
+import { RootState } from "./store";
 
 interface AlertState {
   showAlert: boolean;

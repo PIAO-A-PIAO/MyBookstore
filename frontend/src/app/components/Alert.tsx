@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { handleHideAlert, selectAlertProps } from "../redux/alertSlice";
 
-function Alert() {
+const Alert = () => {
   const { success, message, showAlert } = useAppSelector(selectAlertProps);
   const dispatch = useAppDispatch();
 
@@ -10,6 +10,7 @@ function Alert() {
     dispatch(handleHideAlert());
   };
 
+  // if user doesn't close alert in 10 secs, it automatically collapes
   useEffect(() => {
     if (showAlert) {
       setTimeout(() => {
@@ -19,13 +20,13 @@ function Alert() {
   }, [showAlert]);
 
   return showAlert ? (
-    <div
+    <div id="alert_container"
       className={`fixed z-10 top-2 rounded-md justify-self-center flex w-fit w-max-1/3 h-fit gap-2 p-4 text-white ${
         success ? "bg-blue-cta" : "bg-red-error"
       }`}
     >
-      <div>{message}</div>
-      <button onClick={onHideAlert}>
+      <div id="message">{message}</div>
+      <button id="close" onClick={onHideAlert}>
         <svg
           className="h-6 w-6"
           xmlns="http://www.w3.org/2000/svg"

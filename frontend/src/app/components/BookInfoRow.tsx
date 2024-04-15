@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/store";
-import {
-  handleShowPopup,
-  selectMobileView,
-  setCurrentBook,
-} from "../redux/popupSlice";
+import { handleShowPopup, selectMobileView } from "../redux/popupSlice";
 import { BookData } from "../redux/booksSlice";
 import { baseUrl } from "../utils";
 
@@ -12,7 +8,7 @@ interface BookInfoRowProps {
   book: BookData;
 }
 
-export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
+const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
   const dispatch = useAppDispatch();
   const [isInfoButtonHovered, setIsInfoButtonHovered] = useState(false);
   const mobileView = useAppSelector(selectMobileView);
@@ -26,16 +22,23 @@ export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
   };
 
   return mobileView ? (
-    <div className="flex w-full p-4">
-      <div className="flex flex-col w-full h-fit border-2 border-gray-200 rounded-md p-4 gap-4">
+    <div id="container" className="flex w-full p-4">
+      <div
+        id="card_container"
+        className="flex flex-col w-full h-fit border-2 border-gray-200 rounded-md p-4 gap-4"
+      >
         <img
+          id="image"
           style={{ aspectRatio: "2/3" }}
           src={baseUrl + book.image}
           className="w-2/3 self-center h-full drop-shadow-[6px_6px_0px_rgba(0,0,0,0.25)]"
         />
-        <div className="flex flex-col items-start justify-between">
-          <div className="flex flex-col">
-            <div className="flex flex-col">
+        <div
+          id="info_and_buttons"
+          className="flex flex-col items-start justify-between"
+        >
+          <div id="info_container" className="flex flex-col">
+            <div id="basic_info" className="flex flex-col">
               <p className="text-gray-600 text-body5">{book.isbn}</p>
               <p className="text-h6 text-blue-cta">{book.name}</p>
             </div>
@@ -44,7 +47,7 @@ export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
             </p>
             <p className="text-h4">${book.price}</p>
           </div>
-          <div className="flex w-full items-end gap-2 justify-end">
+          <div id="buttons" className="flex w-full items-end gap-2 justify-end">
             <button
               id="edit"
               onClick={onEdit}
@@ -103,19 +106,22 @@ export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
       } grid grid-cols-11  items-center justify-start border-b-2 border-b-gray-200 sm:gap-2 lg:gap-8 sm:px-4 md:px-5 lg:px-8`}
     >
       <button
-        id="info"
+        id="info_and_buttons"
         onClick={onEdit}
         className="grid col-span-10 grid-cols-subgrid grid-cols-10 sm:gap-4 md:gap-2 lg:gap-6 items-center text-left sm:text-body4 lg:text-body3 md:text-body3 py-4"
         onMouseEnter={() => setIsInfoButtonHovered(true)}
         onMouseLeave={() => setIsInfoButtonHovered(false)}
       >
-        <div className="flex col-span-5 items-center justify-start sm:gap-4">
+        <div
+          id="image_and_basic_info"
+          className="flex col-span-5 items-center justify-start sm:gap-4"
+        >
           <img
             src={baseUrl + book.image}
             style={{ aspectRatio: "2/3" }}
             className="w-20 drop-shadow-[5px_5px_0px_rgba(0,0,0,0.25)]"
           />
-          <div className="flex flex-col mb-4">
+          <div id="isbn_and_name" className="flex flex-col mb-4">
             <p className="text-gray-600 sm:text-body5 lg:text-body4 h-4">
               {book.isbn}
             </p>
@@ -126,7 +132,7 @@ export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
         <p className="col-span-2">{book.category}</p>
         <p className="col-span-1 sm:text-h6 md:text-h5">${book.price}</p>
       </button>
-      <div className="flex w-full justify-end">
+      <div id="button" className="flex w-full justify-end">
         <button
           id="delete"
           onClick={onDelete}
@@ -154,3 +160,5 @@ export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
     </div>
   );
 };
+
+export default BookInfoRow;

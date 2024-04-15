@@ -5,8 +5,10 @@ import {
   formatFileSize,
   objAllFilled,
   trimFileName,
+  verifyBookForm,
+  getFileFromPath,
 } from "../utils";
-import { verifyBookForm } from "../utils";
+import axios from "axios";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import {
   handleHidePopup,
@@ -15,8 +17,7 @@ import {
   selectType,
 } from "../redux/popupSlice";
 import { BookData, selectBooks } from "../redux/booksSlice";
-import { getFileFromPath } from "../utils";
-import axios from "axios";
+
 import {
   useAddBookMutation,
   useEditBookMutation,
@@ -25,22 +26,36 @@ import {
 import { handleShowAlert } from "../redux/alertSlice";
 
 const ModifyBook: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [addBook, addBookRes] = useAddBookMutation();
   const [editBook, editBookRes] = useEditBookMutation();
   const getCategoriesRes = useGetCategoriesQuery();
-  const [categories, setCategories] = useState<string[]>([]);
-  const [coverChanged, setCoverChanged] = useState(false);
+
   const type = useAppSelector(selectType);
   const book = useAppSelector(selectCurrentBook);
   const books = useAppSelector(selectBooks);
-  const [enableSubmit, setEnableSubmit] = useState(false);
   const mobileView = useAppSelector(selectMobileView);
 
-  const dispatch = useAppDispatch();
+  const [categories, setCategories] = useState<string[]>([]);
+  const [coverChanged, setCoverChanged] = useState(false);
+  const [enableSubmit, setEnableSubmit] = useState(false);
+  const [cover, setCover] = useState<File | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
+
+  const [bookData, setBookData] = useState<BookData>(
+    book || {
+      isbn: "",
+      name: "",
+      author: "",
+      category: "",
+      price: "",
+      image: "",
+    }
+  );
+
   const onHidePopup = () => {
     dispatch(handleHidePopup());
   };
-  const [cover, setCover] = useState<File | null>(null);
 
   useEffect(() => {
     if (getCategoriesRes?.currentData) {
@@ -48,6 +63,7 @@ const ModifyBook: React.FC = () => {
     }
   }, [getCategoriesRes]);
 
+  // if in edit mode, retrieve image file for replacement
   useEffect(() => {
     if (type === "edit") {
       getFileFromPath(baseUrl + book.image)
@@ -59,17 +75,7 @@ const ModifyBook: React.FC = () => {
         });
     }
   }, [book]);
-  const [bookData, setBookData] = useState<BookData>(
-    book || {
-      isbn: "",
-      name: "",
-      author: "",
-      category: "",
-      price: "",
-      image: "",
-    }
-  );
-  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
+
   const onSubmit = async () => {
     const formErrors = verifyBookForm(bookData, books, type);
     setErrors(formErrors);
@@ -84,7 +90,6 @@ const ModifyBook: React.FC = () => {
           })
         );
         try {
-          // Execute the mutation
           await addBook(bookData).unwrap();
           // Show success alert
           dispatch(
@@ -95,6 +100,7 @@ const ModifyBook: React.FC = () => {
           );
           onHidePopup();
         } catch (error) {
+          // Show fail alert
           dispatch(
             handleShowAlert({
               success: false,
@@ -114,7 +120,6 @@ const ModifyBook: React.FC = () => {
           );
         }
         try {
-          // Execute the mutation
           await editBook({
             updatedBook: bookData,
             coverImage: coverChanged ? book.image : null,
@@ -128,6 +133,7 @@ const ModifyBook: React.FC = () => {
           );
           onHidePopup();
         } catch (error) {
+          // Show fail alert
           dispatch(
             handleShowAlert({
               success: false,
@@ -139,11 +145,12 @@ const ModifyBook: React.FC = () => {
     }
   };
 
-  const ref = useRef<HTMLInputElement | null>(null); // Ref is of type RefObject<HTMLInputElement>
-
+  // input tag for file upload
+  const ref = useRef<HTMLInputElement | null>(null);
   const onImageChange = () => {
     ref.current?.click();
   };
+
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
     if (fileList && fileList.length > 0) {
@@ -160,6 +167,7 @@ const ModifyBook: React.FC = () => {
     setBookData({ ...bookData, image: "" });
   };
 
+  // submit button disabled only if all field filled or book info changed (in edit mode)
   useEffect(() => {
     setErrors({});
     if (type === "edit") {
@@ -242,6 +250,7 @@ const ModifyBook: React.FC = () => {
           </div>
         ) : (
           <div
+            id="upload_button_container"
             className={`flex flex-col ${mobileView ? "w-full" : "w-1/2"} py-3`}
           >
             <button
@@ -280,8 +289,11 @@ const ModifyBook: React.FC = () => {
             )}
           </div>
         )}
-        <div className={`flex flex-col ${mobileView ? "w-full" : "w-1/2"}`}>
-          <label className="label w-full gap-1">
+        <div
+          id="info_container"
+          className={`flex flex-col ${mobileView ? "w-full" : "w-1/2"}`}
+        >
+          <label id="name" className="label w-full gap-1">
             <p>
               <span className="text-red-error">*</span>Name:
             </p>
@@ -301,7 +313,7 @@ const ModifyBook: React.FC = () => {
               <div className="h-3" />
             )}
           </label>
-          <label className="label w-full gap-1">
+          <label id="isbn" className="label w-full gap-1">
             <p>
               <span className="text-red-error">*</span>ISBN:
             </p>
@@ -321,7 +333,7 @@ const ModifyBook: React.FC = () => {
               <div className="h-3" />
             )}
           </label>
-          <label className="label w-full gap-1">
+          <label id="author" className="label w-full gap-1">
             <p>
               <span className="text-red-error">*</span>Author:
             </p>
@@ -341,7 +353,7 @@ const ModifyBook: React.FC = () => {
               <div className="h-3" />
             )}
           </label>
-          <label className="label w-full gap-1">
+          <label id="category" className="label w-full gap-1">
             <p>
               <span className="text-red-error">*</span>Category:
             </p>
@@ -367,7 +379,7 @@ const ModifyBook: React.FC = () => {
               <div className="h-3" />
             )}
           </label>
-          <label className="label w-full gap-1">
+          <label id="price" className="label w-full gap-1">
             <p>
               <span className="text-red-error">*</span>Price:
             </p>
@@ -398,8 +410,8 @@ const ModifyBook: React.FC = () => {
           </label>
         </div>
       </div>
-      <div className="w-full flex justify-end">
-        <div className="w-fit flex gap-4">
+      <div id="buttons_container" className="w-full flex justify-end">
+        <div id="buttons" className="w-fit flex gap-4">
           <button
             className={`secondary-btn ${mobileView ? "p-2" : ""}`}
             type="button"

@@ -13,36 +13,39 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
+  const mobileView = useAppSelector(selectMobileView);
+
+
   const handleClick = (pageNumber: number) => {
     onPageChange(pageNumber);
   };
-  const mobileView = useAppSelector(selectMobileView);
 
   const getPageNumbers = () => {
-    const maxPageNumbers = mobileView ? 5 : 9; // Maximum number of visible page numbers
+    // maximum number of visible page numbers
+    const maxPageNumbers = mobileView ? 5 : 9;
     const pageNumbers = [];
 
     if (totalPages <= maxPageNumbers) {
-      // Less than or equal to maxPageNumbers pages, display all page numbers
+      // if less than or equal to max, display all
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
       }
     } else {
-      // More than maxPageNumbers pages
+      // if more than maxPageNumbers pages
       if (currentPage <= Math.floor(maxPageNumbers / 2) + 1) {
-        // Current page is close to the beginning
+        // urrent page is close to the beginning
         for (let i = 1; i <= maxPageNumbers - 1; i++) {
           pageNumbers.push(i);
         }
         pageNumbers.push(totalPages);
       } else if (currentPage >= totalPages - Math.floor(maxPageNumbers / 2)) {
-        // Current page is close to the end
+        // current page is close to the end
         pageNumbers.push(1);
         for (let i = totalPages - maxPageNumbers + 2; i <= totalPages; i++) {
           pageNumbers.push(i);
         }
       } else {
-        // Current page is in the middle
+        // current page is in the middle
         pageNumbers.push(1);
         for (
           let i = currentPage - Math.floor(maxPageNumbers / 2);
@@ -65,7 +68,7 @@ const Pagination: React.FC<PaginationProps> = ({
   }, [mobileView, currentPage]);
 
   return (
-    <div className="flex justify-center py-4">
+    <div id="pagination_container" className="flex justify-center py-4">
       <button
         disabled={currentPage === 1}
         onClick={() => handleClick(currentPage - 1)}

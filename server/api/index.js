@@ -25,20 +25,17 @@ app.post("/add-cover", upload.single("cover"), (req, res) => {});
 app.get("/", (req, res) => {
   res.send("Server is now running");
 });
+
 app.get("/booklist", (req, res) => {
-  // Send the booklist.json file
   res.sendFile(path.join(__dirname, "public", "booklist.json"));
 });
 
 app.get("/categories", (req, res) => {
-  // Send the categories.json file
   res.sendFile(path.join(__dirname, "public", "categories.json"));
 });
 
 app.get("/assets/:imageName", (req, res) => {
-  // Extract the image name from the request parameters
   const imageName = req.params.imageName;
-  // Send the image file
   res.sendFile(path.join(__dirname, "public", "assets", imageName));
 });
 
@@ -46,23 +43,19 @@ app.post("/add-cover", upload.single("cover"), (req, res) => {});
 
 app.post("/add-book", (req, res) => {
   try {
-    const book = req.body; // Assuming the request body contains the book data
+    const book = req.body;
 
-    // Generate a unique bookId
     const bookId = uuidv4();
     book.bookId = bookId;
 
-    // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
     let bookList = [];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
 
-    // Add the new book to the book list
     bookList.push(book);
 
-    // Write the updated book list back to file
     fs.writeFileSync(bookListPath, JSON.stringify(bookList, null, 2));
 
     res
@@ -76,37 +69,28 @@ app.post("/add-book", (req, res) => {
 
 app.post("/delete-book", (req, res) => {
   try {
-    const { bookId } = req.body; // Assuming the request body contains the bookId of the book to be deleted
-    console.log(bookId);
-    // Read the existing booklist.json file
+    const { bookId } = req.body;
+    
     const bookListPath = path.join(__dirname, "public", "booklist.json");
     let bookList = [];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
-    console.log(bookList);
 
-    // Find the index of the book with the specified bookId
     const index = bookList.findIndex((book) => book.bookId === bookId);
 
     if (index !== -1) {
-      // Extract the path to the image of the book
       const imagePath = path.join(__dirname, "public", bookList[index].image);
 
-      // Delete the book from the booklist
       bookList.splice(index, 1);
 
-      // Write the updated book list back to file
       fs.writeFileSync(bookListPath, JSON.stringify(bookList, null, 2));
 
-      // Delete the corresponding image file
       fs.unlink(imagePath, (err) => {
         if (err) {
           console.error("Error deleting image:", err);
-          // Handle error appropriately
         } else {
           console.log("Image deleted successfully");
-          // Image deleted successfully
         }
       });
 
@@ -122,37 +106,31 @@ app.post("/delete-book", (req, res) => {
 
 app.post("/edit-book", (req, res) => {
   try {
-    const { updatedBook, coverImage } = req.body; // Assuming the request body contains the updated book data
-    // Read the existing booklist.json file
+    const { updatedBook, coverImage } = req.body;
     const bookListPath = path.join(__dirname, "public", "booklist.json");
     let bookList = [];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
 
-    // Find the index of the book with the specified bookId
     const index = bookList.findIndex(
       (book) => book.bookId === updatedBook.bookId
     );
 
     if (index !== -1) {
-      // Update the book in the booklist
       if (coverImage) {
         const imagePath = path.join(__dirname, "public", coverImage);
         fs.unlink(imagePath, (err) => {
           if (err) {
             console.error("Error deleting image:", err);
-            // Handle error appropriately
           } else {
             console.log("Image deleted successfully");
-            // Image deleted successfully
           }
         });
       }
 
       bookList[index] = updatedBook;
 
-      // Write the updated book list back to file
       fs.writeFileSync(bookListPath, JSON.stringify(bookList, null, 2));
 
       res.status(200).json({ message: "Book updated successfully!" });
