@@ -3,6 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const cors = require("cors");
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 app.use(cors());
@@ -26,17 +27,28 @@ app.get("/booklist", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "booklist.json"));
 });
 
-// app.get("/assets/:imageName", (req, res) => {
-//   // Extract the image name from the request parameters
-//   const imageName = req.params.imageName;
-//   // Send the image file
-//   res.sendFile(path.join(__dirname, "public", "assets", imageName));
-// });
+app.get("/categories", (req, res) => {
+  // Send the categories.json file
+  res.sendFile(path.join(__dirname, "public", "categories.json"));
+});
+
+app.get("/assets/:imageName", (req, res) => {
+  // Extract the image name from the request parameters
+  const imageName = req.params.imageName;
+  // Send the image file
+  res.sendFile(path.join(__dirname, "public", "assets", imageName));
+});
 
 app.post("/add-cover", upload.single("cover"), (req, res) => {});
+
+
 app.post("/add-book", (req, res) => {
   try {
     const book = req.body; // Assuming the request body contains the book data
+
+    // Generate a unique bookId
+    const bookId = uuidv4();
+    book.bookId = bookId;
 
     // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
@@ -51,7 +63,7 @@ app.post("/add-book", (req, res) => {
     // Write the updated book list back to file
     fs.writeFileSync(bookListPath, JSON.stringify(bookList, null, 2));
 
-    res.status(200).json({ message: "Book added successfully!" });
+    res.status(200).json({ message: "Book added successfully!", bookId: bookId });
   } catch (error) {
     console.error("Error adding book:", error);
     res.status(500).json({ error: "Internal server error" });
