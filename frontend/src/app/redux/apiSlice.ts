@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BookData } from "./booksSlice";
-
-const baseUrl = "http://localhost:4000";
+import { baseUrl } from "../utils";
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: (headers) => {
