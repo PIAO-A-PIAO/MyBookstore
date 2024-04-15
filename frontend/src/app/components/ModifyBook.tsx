@@ -351,8 +351,8 @@ const ModifyBook: React.FC = () => {
               }
             >
               <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option value={category}>{category}</option>
+              {categories.map((index, category) => (
+                <option key={index} value={category}>{category}</option>
               ))}
             </select>
             {errors.category ? (
