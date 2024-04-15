@@ -3,7 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const cors = require("cors");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 app.use(cors());
@@ -22,6 +22,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Define a route to serve the booklist JSON file
+app.get("/", (req, res) => {
+  res.send("Server is now running");
+});
 app.get("/booklist", (req, res) => {
   // Send the booklist.json file
   res.sendFile(path.join(__dirname, "public", "booklist.json"));
@@ -40,7 +43,6 @@ app.get("/assets/:imageName", (req, res) => {
 });
 
 app.post("/add-cover", upload.single("cover"), (req, res) => {});
-
 
 app.post("/add-book", (req, res) => {
   try {
@@ -63,7 +65,9 @@ app.post("/add-book", (req, res) => {
     // Write the updated book list back to file
     fs.writeFileSync(bookListPath, JSON.stringify(bookList, null, 2));
 
-    res.status(200).json({ message: "Book added successfully!", bookId: bookId });
+    res
+      .status(200)
+      .json({ message: "Book added successfully!", bookId: bookId });
   } catch (error) {
     console.error("Error adding book:", error);
     res.status(500).json({ error: "Internal server error" });

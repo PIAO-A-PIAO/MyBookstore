@@ -153,12 +153,12 @@
     "image": "/assets/TheVoyage.jpg"
   },
   {
-    "bookId": "17",
     "isbn": "0743297334",
     "name": "The Sun Also Rises",
     "author": "Ernest Hemingway",
     "category": "Fiction",
     "price": "24.45",
-    "image": "/assets/TheSunAlsoRises.jpg"
+    "image": "/assets/TheSunAlsoRises.jpg",
+    "bookId": "0884ef32-e7cb-4010-9507-66413d410d9e"
   }
 ]
