@@ -10,11 +10,13 @@ Please note that because the server is deployed to a free web service, the first
 **To Run Project locally:**
 
 **Backend:**
+- Enter `server` folder.
 - Run `npm install` to install all dependencies.
 - Run `npm run server` to start the server.
 - The server should run on localhost:4000.
 
 **Frontend:**
+- Enter `frontend` folder
 - This project does not have an `.env` file, so please go to `src/app/util.ts` and manually set `baseUrl` to `localhost:4000`.
 - Run `npm install` to install all dependencies.
 - Run `npm run dev` to start the client.
