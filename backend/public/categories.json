@@ -1,4 +1,4 @@
-export const categories = [
+[
   "Action and Adventure",
   "Art",
   "Biographies",
@@ -17,5 +17,5 @@ export const categories = [
   "Self-Help",
   "Thriller",
   "Travel",
-  "Others",
-];
+  "Others"
+]

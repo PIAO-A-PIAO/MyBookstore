@@ -6,6 +6,7 @@ import {
   setCurrentBook,
 } from "../redux/popupSlice";
 import { BookData } from "../redux/booksSlice";
+import { baseUrl } from "../utils";
 
 interface BookInfoRowProps {
   book: BookData;
@@ -29,7 +30,7 @@ export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
       <div className="flex flex-col w-full h-fit border-2 border-gray-200 rounded-md p-4 gap-4">
         <img
           style={{ aspectRatio: "2/3" }}
-          src={book.image}
+          src={baseUrl + book.image}
           className="w-2/3 self-center h-full drop-shadow-[6px_6px_0px_rgba(0,0,0,0.25)]"
         />
         <div className="flex flex-col items-start justify-between">
@@ -110,7 +111,7 @@ export const BookInfoRow: React.FC<BookInfoRowProps> = ({ book }) => {
       >
         <div className="flex col-span-5 items-center justify-start sm:gap-4">
           <img
-            src={book.image}
+            src={baseUrl + book.image}
             style={{ aspectRatio: "2/3" }}
             className="w-20 drop-shadow-[5px_5px_0px_rgba(0,0,0,0.25)]"
           />

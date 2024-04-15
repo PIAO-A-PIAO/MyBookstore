@@ -7,6 +7,7 @@ import {
 } from "../redux/popupSlice";
 import { useDeleteBookMutation } from "../redux/apiSlice";
 import { handleShowAlert } from "../redux/alertSlice";
+import { baseUrl } from "../utils";
 
 function DeleteBook() {
   const dispatch = useAppDispatch();
@@ -43,11 +44,11 @@ function DeleteBook() {
           <div
             className={`flex ${
               mobileView ? "flex-col" : ""
-            } h-fit p-4 gap-4 gap-8 lg:gap-12`}
+            } w-fit h-fit p-4 gap-4 gap-8 lg:gap-12`}
           >
             <img
               style={{ aspectRatio: "2/3" }}
-              src={book.image}
+              src={baseUrl + book.image}
               className={`${
                 mobileView ? "w-2/3" : "w-1/3"
               } self-center h-full drop-shadow-[6px_6px_0px_rgba(0,0,0,0.25)]`}
@@ -73,13 +74,17 @@ function DeleteBook() {
         <div className="w-full flex justify-end">
           <div className="w-fit flex gap-4">
             <button
-              className={`secondary-btn ${mobileView?"p-2":""}`}
+              className={`secondary-btn ${mobileView ? "p-2" : ""}`}
               type="button"
               onClick={onHidePopup}
             >
               Cancel
             </button>
-            <button className={`primary-btn ${mobileView?"p-2":""}`} type="button" onClick={onDelete}>
+            <button
+              className={`primary-btn ${mobileView ? "p-2" : ""}`}
+              type="button"
+              onClick={onDelete}
+            >
               Delete Book
             </button>
           </div>

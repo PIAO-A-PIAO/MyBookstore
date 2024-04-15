@@ -1,6 +1,5 @@
 import React, { useState, useRef, ChangeEvent, useEffect } from "react";
-import { equalObj, formatFileSize, objAllFilled, trimFileName } from "../utils";
-import { categories } from "../../../public/categories";
+import { baseUrl, equalObj, formatFileSize, objAllFilled, trimFileName } from "../utils";
 import { verifyBookForm } from "../utils";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import {
@@ -12,12 +11,18 @@ import {
 import { BookData, selectBooks } from "../redux/booksSlice";
 import { getFileFromPath } from "../utils";
 import axios from "axios";
-import { useAddBookMutation, useEditBookMutation } from "../redux/apiSlice";
+import {
+  useAddBookMutation,
+  useEditBookMutation,
+  useGetCategoriesQuery,
+} from "../redux/apiSlice";
 import { handleShowAlert } from "../redux/alertSlice";
 
 const ModifyBook: React.FC = () => {
   const [addBook, addBookRes] = useAddBookMutation();
   const [editBook, editBookRes] = useEditBookMutation();
+  const getCategoriesRes = useGetCategoriesQuery();
+  const [categories, setCategories] = useState([]);
   const [coverChanged, setCoverChanged] = useState(false);
   const type = useAppSelector(selectType);
   const book = useAppSelector(selectCurrentBook);
@@ -30,9 +35,16 @@ const ModifyBook: React.FC = () => {
     dispatch(handleHidePopup());
   };
   const [cover, setCover] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (getCategoriesRes?.currentData) {
+      setCategories(getCategoriesRes.currentData);
+    }
+  }, [getCategoriesRes]);
+
   useEffect(() => {
     if (type === "edit") {
-      getFileFromPath(book.image)
+      getFileFromPath(baseUrl + book.image)
         .then((file) => {
           setCover(file);
         })
@@ -155,7 +167,12 @@ const ModifyBook: React.FC = () => {
   }, [bookData]);
 
   return (
-    <div id="popup_content" className={`w-full flex flex-col gap-2 ${mobileView?"h-60 overflow-y-scroll":""}`}>
+    <div
+      id="popup_content"
+      className={`w-full flex flex-col gap-2 ${
+        mobileView ? "h-60 overflow-y-scroll" : ""
+      }`}
+    >
       {errors.general ? (
         <p id="error_general" className="text-red-error text-body4 h-3">
           {errors.general}
@@ -168,7 +185,10 @@ const ModifyBook: React.FC = () => {
         className={`flex ${mobileView ? "flex-col gap-2" : "gap-8"} w-full`}
       >
         {cover ? (
-          <div id="cover_container" className={`flex flex-col ${mobileView?"w-full":"w-1/2"} py-3`}>
+          <div
+            id="cover_container"
+            className={`flex flex-col ${mobileView ? "w-full" : "w-1/2"} py-3`}
+          >
             <div
               id="cover_button"
               className="secondary-btn hover:bg-white w-full h-full flex flex-col items-center gap-3 p-4"
@@ -217,7 +237,9 @@ const ModifyBook: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className={`flex flex-col ${mobileView?"w-full":"w-1/2"} py-3`}>
+          <div
+            className={`flex flex-col ${mobileView ? "w-full" : "w-1/2"} py-3`}
+          >
             <button
               onClick={onImageChange}
               className={`secondary-btn w-full h-full flex flex-col items-center justify-center gap-4 ${
@@ -254,7 +276,7 @@ const ModifyBook: React.FC = () => {
             )}
           </div>
         )}
-        <div className={`flex flex-col ${mobileView?"w-full":"w-1/2"}`}>
+        <div className={`flex flex-col ${mobileView ? "w-full" : "w-1/2"}`}>
           <label className="label w-full gap-1">
             <p>
               <span className="text-red-error">*</span>Name:
@@ -329,8 +351,8 @@ const ModifyBook: React.FC = () => {
               }
             >
               <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option value={category}>{category}</option>
+              {categories.map((index, category) => (
+                <option key={index} value={category}>{category}</option>
               ))}
             </select>
             {errors.category ? (
@@ -372,15 +394,23 @@ const ModifyBook: React.FC = () => {
       </div>
       <div className="w-full flex justify-end">
         <div className="w-fit flex gap-4">
-          <button className={`secondary-btn ${mobileView?"p-2":""}`} type="button" onClick={onHidePopup}>
+          <button
+            className={`secondary-btn ${mobileView ? "p-2" : ""}`}
+            type="button"
+            onClick={onHidePopup}
+          >
             Cancel
           </button>
           {enableSubmit ? (
-            <button className={`primary-btn ${mobileView?"p-2":""}`}  type="button" onClick={onSubmit}>
+            <button
+              className={`primary-btn ${mobileView ? "p-2" : ""}`}
+              type="button"
+              onClick={onSubmit}
+            >
               {type === "edit" ? "Edit Book" : "Add Book"}
             </button>
           ) : (
-            <div className={`primary-btn-disabled ${mobileView?"p-2":""}`} >
+            <div className={`primary-btn-disabled ${mobileView ? "p-2" : ""}`}>
               {type === "edit" ? "Edit Book" : "Add Book"}
             </div>
           )}

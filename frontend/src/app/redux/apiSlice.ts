@@ -19,6 +19,9 @@ export const apiSlice:any = createApi({
       query: () => "/booklist",
       providesTags: ["booklist"],
     }),
+    getCategories: builder.query<any, void>({
+      query: () => "/categories",
+    }),
     addBook: builder.mutation<any, BookData>({
       // Define the query function to send the input data to the server
       query: (input) => ({
@@ -52,6 +55,7 @@ export const apiSlice:any = createApi({
 // Destructure the generated hooks
 export const {
   useGetBooklistQuery,
+  useGetCategoriesQuery,
   useAddBookMutation,
   useDeleteBookMutation,
   useEditBookMutation,
