@@ -28,7 +28,7 @@ export default function Home() {
   }, [booklistRes]);
   const reduxBooklist = useAppSelector(selectBooks);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 1; // Number of books per page
+  const pageSize = 8; // Number of books per page
 
   // Calculate total number of pages
   const totalPages = Math.ceil(reduxBooklist.length / pageSize);
