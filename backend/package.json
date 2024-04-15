@@ -4,7 +4,7 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "server": "nodemon index.js"
+    "server": "nodemon api/index.js"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
