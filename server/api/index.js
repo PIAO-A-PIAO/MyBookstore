@@ -21,8 +21,25 @@ const storage = multer.diskStorage({
   });
   const upload = multer({ storage: storage });
 
-app.get("/", (req, res) => res.send("Express on Vercel"));
-
+  app.get("/", (req, res) => {
+    res.send("Server is now running");
+  });
+  app.get("/booklist", (req, res) => {
+    // Send the booklist.json file
+    res.sendFile(path.join(__dirname, "public", "booklist.json"));
+  });
+  
+  app.get("/categories", (req, res) => {
+    // Send the categories.json file
+    res.sendFile(path.join(__dirname, "public", "categories.json"));
+  });
+  
+  app.get("/assets/:imageName", (req, res) => {
+    // Extract the image name from the request parameters
+    const imageName = req.params.imageName;
+    // Send the image file
+    res.sendFile(path.join(__dirname, "public", "assets", imageName));
+  });
 app.listen(4000, () => console.log("Server ready on port 4000."));
 
 module.exports = app;
