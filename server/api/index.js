@@ -2,11 +2,11 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-// const cors = require("cors");
+const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
-// app.use(cors());
+app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
