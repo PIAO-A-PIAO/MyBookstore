@@ -77,7 +77,7 @@ const ModifyBook: React.FC = () => {
       if (type === "add" && cover) {
         const formData = new FormData();
         formData.append("cover", cover);
-        axios.post("http://localhost:4000/add-cover", formData).catch((error) =>
+        axios.post(baseUrl + "/add-cover", formData).catch((error) =>
           handleShowAlert({
             success: false,
             message: "Error adding book",
@@ -107,7 +107,7 @@ const ModifyBook: React.FC = () => {
           const formData = new FormData();
           formData.append("cover", cover);
           axios
-            .post("http://localhost:4000/add-cover", formData)
+            .post(baseUrl + "/add-cover", formData)
             .catch((error) =>
               handleShowAlert({
                 success: false,
