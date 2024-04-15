@@ -1,5 +1,11 @@
 import React, { useState, useRef, ChangeEvent, useEffect } from "react";
-import { baseUrl, equalObj, formatFileSize, objAllFilled, trimFileName } from "../utils";
+import {
+  baseUrl,
+  equalObj,
+  formatFileSize,
+  objAllFilled,
+  trimFileName,
+} from "../utils";
 import { verifyBookForm } from "../utils";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import {
@@ -22,7 +28,7 @@ const ModifyBook: React.FC = () => {
   const [addBook, addBookRes] = useAddBookMutation();
   const [editBook, editBookRes] = useEditBookMutation();
   const getCategoriesRes = useGetCategoriesQuery();
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [coverChanged, setCoverChanged] = useState(false);
   const type = useAppSelector(selectType);
   const book = useAppSelector(selectCurrentBook);
@@ -351,8 +357,10 @@ const ModifyBook: React.FC = () => {
               }
             >
               <option value="">Select a category</option>
-              {categories.map((index, category) => (
-                <option key={index} value={category}>{category}</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
             {errors.category ? (
