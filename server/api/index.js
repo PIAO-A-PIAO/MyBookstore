@@ -11,37 +11,37 @@ app.use(express.json());
 app.use(express.static("public"));
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "public/assets");
-    },
-    filename: (req, file, cb) => {
-      console.log(file);
-      cb(null, file.originalname);
-    },
-  });
-  const upload = multer({ storage: storage });
+  destination: (req, file, cb) => {
+    cb(null, "public/assets");
+  },
+  filename: (req, file, cb) => {
+    console.log(file);
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
 
-  app.get("/", (req, res) => {
-    res.send("Server is now running");
-  });
-  app.get("/booklist", (req, res) => {
-    // Send the booklist.json file
-    res.sendFile(path.join(__dirname, "public", "booklist.json"));
-  });
-  
-  app.get("/categories", (req, res) => {
-    // Send the categories.json file
-    res.sendFile(path.join(__dirname, "public", "categories.json"));
-  });
-  
-  app.get("/assets/:imageName", (req, res) => {
-    // Extract the image name from the request parameters
-    const imageName = req.params.imageName;
-    // Send the image file
-    res.sendFile(path.join(__dirname, "public", "assets", imageName));
-  });
+app.get("/", (req, res) => {
+  res.send("Server is now running");
+});
+app.get("/booklist", (req, res) => {
+  // Send the booklist.json file
+  res.sendFile(path.join(__dirname, "public", "booklist.json"));
+});
 
-  app.post("/add-cover", upload.single("cover"), (req, res) => {});
+app.get("/categories", (req, res) => {
+  // Send the categories.json file
+  res.sendFile(path.join(__dirname, "public", "categories.json"));
+});
+
+app.get("/assets/:imageName", (req, res) => {
+  // Extract the image name from the request parameters
+  const imageName = req.params.imageName;
+  // Send the image file
+  res.sendFile(path.join(__dirname, "public", "assets", imageName));
+});
+
+app.post("/add-cover", upload.single("cover"), (req, res) => {});
 
 app.post("/add-book", (req, res) => {
   try {
@@ -53,7 +53,7 @@ app.post("/add-book", (req, res) => {
 
     // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
-    let bookList = <any[]>[];
+    let bookList = [];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
@@ -76,13 +76,14 @@ app.post("/add-book", (req, res) => {
 app.post("/delete-book", (req, res) => {
   try {
     const { bookId } = req.body; // Assuming the request body contains the bookId of the book to be deleted
-
+    console.log(bookId)
     // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
-    let bookList = <any[]>[];
+    let bookList = [];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
+    console.log(bookList)
 
     // Find the index of the book with the specified bookId
     const index = bookList.findIndex((book) => book.bookId === bookId);
@@ -123,7 +124,7 @@ app.post("/edit-book", (req, res) => {
     const { updatedBook, coverImage } = req.body; // Assuming the request body contains the updated book data
     // Read the existing booklist.json file
     const bookListPath = path.join(__dirname, "public", "booklist.json");
-    let bookList = <any[]>[];
+    let bookList = [];
     if (fs.existsSync(bookListPath)) {
       bookList = JSON.parse(fs.readFileSync(bookListPath, "utf8"));
     }
