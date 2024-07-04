@@ -1,5 +1,6 @@
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import EmailProvider from "next-auth/providers/email";
 
 export const options = {
   providers: [
@@ -34,18 +35,19 @@ export const options = {
       clientSecret: process.env.GOOGLE_SECRET,
     }),
   ],
+  
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
-        return token;
       }
+      return token;
     },
     async session({ session, token }) {
       if (session?.user) {
         session.user.role = token.role;
-        return session;
       }
+      return session;
     },
   },
 };
