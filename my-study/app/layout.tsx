@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Nav from "./(components)/Nav";
+import LeftSideBar from "./(components)/LeftSideBar";
+import AuthProvider from "./(components)/AuthProvider";
+import PublicTopbar from "./(components)/PublicTopbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,9 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-gray-100">
-        <Nav />
-        <div className="m-2">{children}</div>
+      <body className="bg-gray-50">
+        <PublicTopbar />
+        <AuthProvider>
+          <div className="m-2">{children}</div>
+        </AuthProvider>
       </body>
     </html>
   );

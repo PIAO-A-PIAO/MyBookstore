@@ -1,6 +1,8 @@
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email";
+import CredentialsProvider from "next-auth/providers/credentials";
+import User from "@/app/(models)/User";
+import bcrypt from "bcrypt";
 
 export const options = {
   providers: [
@@ -9,7 +11,7 @@ export const options = {
         console.log("Profile GitHub: ", profile);
 
         let userRole = "GitHub User";
-        if (profile?.email == "piaoxuanyi32@gmail.com") {
+        if (profile?.email == "piaoxuanyi2001@gmail.com") {
           userRole = "admin";
         }
 
@@ -25,6 +27,11 @@ export const options = {
       profile(profile) {
         console.log("Profile Google: ", profile);
 
+        let userRole = "Google User";
+        if (profile?.email == "piaoxuanyi2001@gmail.com") {
+          userRole = "admin";
+        }
+
         return {
           ...profile,
           id: profile.sub,
@@ -34,8 +41,50 @@ export const options = {
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: {
+          label: "email:",
+          type: "text",
+          placeholder: "your email",
+        },
+        password: {
+          label: "password:",
+          type: "password",
+          placeholder: "your password",
+        },
+      },
+      async authorize(credentials) {
+        try {
+          const foundUser = await User.findOne({ email: credentials.email })
+            .lean()
+            .exec();
+
+          if (foundUser) {
+            const match = await bcrypt.compare(
+              credentials.password,
+              foundUser.password
+            );
+
+            if (match) {
+              console.log("Good Pass");
+              delete foundUser.password;
+
+              foundUser["role"] = "Unverified Email";
+              return foundUser;
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        return null;
+      },
+    }),
   ],
-  
+  pages: {
+    signIn: "/signin",
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
