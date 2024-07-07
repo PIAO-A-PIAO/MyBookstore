@@ -3,7 +3,7 @@ import GameCard from "./(components)/(home)/GameCard";
 
 const Home = () => {
   return (
-    <section className="w-full py-24">
+    <section className="w-full py-48">
       <div className="container grid gap-12 px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-4">
@@ -18,7 +18,7 @@ const Home = () => {
           </div>
         </div>
         <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <GameCard name="Second Life" description="Collaborate with others to write the life story of an imaginary character."/>
+          <GameCard name="Second Life" description="Collaborate with others to write the life story of an imaginary character." image=""/>
         </div>
       </div>
     </section>

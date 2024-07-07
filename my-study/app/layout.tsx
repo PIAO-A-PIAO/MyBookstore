@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import LeftSideBar from "./(components)/LeftSideBar";
 import AuthProvider from "./(components)/AuthProvider";
 import PublicTopbar from "./(components)/PublicTopbar";
 
@@ -17,9 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-50">
-        <PublicTopbar />
+        <PublicTopbar authPage={false} />
         <AuthProvider>
-          <div className="m-2">{children}</div>
+          <div>{children}</div>
         </AuthProvider>
       </body>
     </html>
