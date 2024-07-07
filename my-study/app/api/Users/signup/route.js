@@ -16,7 +16,9 @@ export async function POST(req) {
     }
 
     // check for duplicate emails
-    const duplicate = await User.findOne({ email: userData.email })
+    const duplicate = await User.findOne({
+      $or: [{ email: userData.email }, { name: userData.name }],
+    })
       .lean()
       .exec();
 

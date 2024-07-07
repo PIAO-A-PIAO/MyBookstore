@@ -3,15 +3,9 @@
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 
-interface FormData {
-  name: string;
-  email: string;
-  password: string;
-}
-
 const SignUp = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
@@ -27,7 +21,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const response = await fetch("/api/Users", {
+    const response = await fetch("/api/Users/signup", {
       method: "POST",
       body: JSON.stringify({ formData }),
       headers: {
@@ -38,8 +32,9 @@ const SignUp = () => {
       const result = await response.json();
       setErrorMsg(result.message);
     } else {
-      router.refresh();
-      router.push("/");
+      console.log(response)
+      // router.refresh();
+      // router.push("/");
     }
   };
 
