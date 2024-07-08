@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import AuthProvider from "./(components)/AuthProvider";
-import PublicTopbar from "./(components)/PublicTopbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,10 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-50">
-        <PublicTopbar authPage={false} />
-        <AuthProvider>
           <div>{children}</div>
-        </AuthProvider>
       </body>
     </html>
   );

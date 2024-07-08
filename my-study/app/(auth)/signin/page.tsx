@@ -1,14 +1,16 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
     user: "",
     password: "",
+    "remember-me": false,
   });
   const [errorMsg, setErrorMsg] = useState("");
-
+  const router = useRouter();
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setFormData((prevData) => ({
@@ -16,6 +18,12 @@ const SignIn = () => {
       [e.target.name]: e.target.value,
     }));
   };
+
+  const handleRememberMe = () =>
+    setFormData((prev) => ({
+      ...prev,
+      "remember-me": !formData["remember-me"],
+    }));
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -30,9 +38,8 @@ const SignIn = () => {
       const result = await response.json();
       setErrorMsg(result.message);
     } else {
-      console.log(response);
-      // router.refresh();
-      // router.push("/");
+      router.refresh();
+      router.push("/");
     }
   };
 
@@ -68,6 +75,15 @@ const SignIn = () => {
                 type="password"
                 required
               />
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                onChange={handleRememberMe}
+                checked={formData["remember-me"]}
+                name="remember-me"
+              />
+              <label>Remember Me</label>
             </div>
             <button
               type="submit"

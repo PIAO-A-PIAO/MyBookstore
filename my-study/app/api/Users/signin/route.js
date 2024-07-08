@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import User from "@/app/(models)/User";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -40,9 +40,29 @@ export async function POST(req) {
       name: user.name,
       email: user.email,
     };
-const token = await jwt.sign(tokenData, process.eventNames.TOKEN_SECRET, {expiresIn: "1d"})
+    const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET, {
+      expiresIn: "1d",
+    });
 
-    return NextResponse.json({ message: "Valid password" }, { status: 200 });
+    const response = NextResponse.json(
+      {
+        message: "Login successful",
+      },
+      { status: 200 }
+    );
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    };
+
+    if (userData["remember-me"]) {
+      cookieOptions.expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    }
+
+    response.cookies.set("token", token, cookieOptions);
+    return response;
   } catch (error) {
     console.log(error);
     return NextResponse.json({ message: "Error", error }, { status: 500 });

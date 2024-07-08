@@ -2,7 +2,7 @@ import React from "react";
 
 const PublicTopbar = ({ authPage }: { authPage: boolean }) => {
   return (
-    <nav className=" border-gray-200 bg-gray-900 fixed top-0 left-0 w-full">
+    <nav className="border-gray-200 bg-gray-900 fixed top-0 left-0 w-full">
       <div className="w-full flex flex-wrap items-center justify-between mx-auto p-4">
         <div className="flex gap-8">
           <a
