@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 
 const PrivateTopbar = () => {
@@ -19,14 +20,27 @@ const PrivateTopbar = () => {
 const ProfileButton = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef<any>();
+  const [errorMsg, setErrorMsg] = useState("");
+  const router = useRouter();
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
-  const handleClickOutside = (event:MouseEvent) => {
+  const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setDropdownVisible(false);
+    }
+  };
+
+  const handleLogOut = async () => {
+    const response = await fetch("/api/Users/logout");
+    if (!response.ok) {
+      const result = await response.json();
+      setErrorMsg(result.message);
+    } else {
+      router.push("/");
+      router.refresh();
     }
   };
 
@@ -52,18 +66,17 @@ const ProfileButton = () => {
       </button>
       {dropdownVisible && (
         <div className="absolute right-0 mt-1 w-48 bg-white border rounded-lg shadow-lg">
-          <a
-            href="/"
-            className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+          <button
+            className="w-full block px-4 py-2 text-gray-800 hover:bg-gray-100"
           >
             Profile Settings
-          </a>
-          <a
-            href="/logout"
-            className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+          </button>
+          <button
+            onClick={handleLogOut}
+            className="w-full block px-4 py-2 text-gray-800 hover:bg-gray-100"
           >
             Log Out
-          </a>
+          </button>
         </div>
       )}
     </div>
