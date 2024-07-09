@@ -1,14 +1,16 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
     user: "",
     password: "",
+    "remember-me": false,
   });
   const [errorMsg, setErrorMsg] = useState("");
-
+  const router = useRouter();
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setFormData((prevData) => ({
@@ -17,18 +19,32 @@ const SignIn = () => {
     }));
   };
 
+  const handleRememberMe = () =>
+    setFormData((prev) => ({
+      ...prev,
+      "remember-me": !formData["remember-me"],
+    }));
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const response = await fetch("/api/Users/signin", {
+      method: "POST",
+      body: JSON.stringify({ formData }),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      const result = await response.json();
+      setErrorMsg(result.message);
+    } else {
+      router.refresh();
+      router.push("/");
+    }
+  };
+
   return (
-    <div className="grid grid-cols-2 w-full min-h-screen">
-      <div className="flex flex-col bg-gray-900 items-center justify-center">
-        <div className="max-w-md space-y-4 text-gray-50">
-          <h1 className="text-4xl font-bold tracking-tight">
-            Welcome to My Study
-          </h1>
-          <p className="text-lg">
-            A place to unlock your imagination and have fun.
-          </p>
-        </div>
-      </div>
+    <>
       <div className="flex items-center justify-center">
         <div className="w-full max-w-md space-y-6">
           <div className="space-y-2 text-center">
@@ -37,7 +53,7 @@ const SignIn = () => {
               Enter your credentials to access your account
             </p>
           </div>
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} method="post" className="space-y-4">
             <div className="space-y-2">
               <label>Email/User Name</label>
               <input
@@ -60,7 +76,19 @@ const SignIn = () => {
                 required
               />
             </div>
-            <button className="w-full p-2 bg-gray-900 text-gray-50 rounded-md">
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                onChange={handleRememberMe}
+                checked={formData["remember-me"]}
+                name="remember-me"
+              />
+              <label>Remember Me</label>
+            </div>
+            <button
+              type="submit"
+              className="w-full p-2 bg-gray-900 text-gray-50 rounded-md"
+            >
               Sign In
             </button>
           </form>
@@ -69,7 +97,7 @@ const SignIn = () => {
           </p>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
