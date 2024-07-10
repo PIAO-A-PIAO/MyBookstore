@@ -62,6 +62,7 @@ export async function POST(req) {
     }
 
     response.cookies.set("token", token, cookieOptions);
+    response.cookies.set("userName", user.name)
     return response;
   } catch (error) {
     console.log(error);
