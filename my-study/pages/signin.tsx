@@ -1,27 +1,34 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useState } from "react";
+import AuthLayout from "./(components)/AuthLayout";
 
-const SignUp = () => {
-  const router = useRouter();
+const SignIn = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    user: "",
     password: "",
+    "remember-me": false,
   });
   const [errorMsg, setErrorMsg] = useState("");
-
+  const router = useRouter();
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
     }));
   };
 
+  const handleRememberMe = () =>
+    setFormData((prev) => ({
+      ...prev,
+      "remember-me": !formData["remember-me"],
+    }));
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const response = await fetch("/api/Users/signup", {
+    const response = await fetch("/api/Users/signin", {
       method: "POST",
       body: JSON.stringify({ formData }),
       headers: {
@@ -32,42 +39,29 @@ const SignUp = () => {
       const result = await response.json();
       setErrorMsg(result.message);
     } else {
-      console.log(response);
-      // router.refresh();
-      // router.push("/");
+      router.push("/")
     }
   };
 
   return (
-    <>
+    <AuthLayout>
       <div className="flex items-center justify-center">
         <div className="w-full max-w-md space-y-6">
           <div className="space-y-2 text-center">
-            <h2 className="text-2xl font-bold">Sign Up</h2>
+            <h2 className="text-2xl font-bold">Sign In</h2>
             <p className="text-gray-600">
-              Enter your user name and email to register an account
+              Enter your credentials to access your account
             </p>
           </div>
           <form onSubmit={handleSubmit} method="post" className="space-y-4">
             <div className="space-y-2">
-              <label>User Name</label>
+              <label>Email/User Name</label>
               <input
-                name="name"
+                value={formData.user}
                 onChange={handleChange}
-                value={formData.name}
+                name="user"
                 className="w-full p-2 rounded-md border-2"
                 type="text"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label>Email</label>
-              <input
-                name="email"
-                onChange={handleChange}
-                value={formData.email}
-                className="w-full p-2 rounded-md border-2"
-                type="email"
                 required
               />
             </div>
@@ -75,27 +69,36 @@ const SignUp = () => {
               <label>Password</label>
               <input
                 name="password"
-                onChange={handleChange}
                 value={formData.password}
+                onChange={handleChange}
                 className="w-full p-2 rounded-md border-2"
                 type="password"
                 required
               />
             </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                onChange={handleRememberMe}
+                checked={formData["remember-me"]}
+                name="remember-me"
+              />
+              <label>Remember Me</label>
+            </div>
             <button
               type="submit"
               className="w-full p-2 bg-gray-900 text-gray-50 rounded-md"
             >
-              Sign Up
+              Sign In
             </button>
           </form>
           <p>
-            Already have an account? <a href="/signin">Sign In</a>.
+            Don't have an account yet? <a href="/signup">Sign Up</a>.
           </p>
         </div>
       </div>
-    </>
+    </AuthLayout>
   );
 };
 
-export default SignUp;
+export default SignIn;

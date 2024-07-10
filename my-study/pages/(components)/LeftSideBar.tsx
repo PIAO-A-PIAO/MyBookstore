@@ -16,7 +16,7 @@ const LeftSideBar: React.FC = () => {
         </a>
         <ul className="space-y-2 py-2 font-medium">
           <SidebarButton icon="/assets/home.svg" name="Home" uri="/" />
-          <SidebarButton icon="/assets/react.svg" name="My Tree Hole" uri="/" />
+          <SidebarButton icon="/assets/react.svg" name="My Tree Hole" uri="/drifting-bottles" />
           <SidebarButton icon="/assets/react.svg" name="Game" uri="/" />
           <SidebarButton icon="/assets/react.svg" name="Game" uri="/" />
           <SidebarButton icon="/assets/react.svg" name="Game" uri="/" />

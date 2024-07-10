@@ -2,32 +2,27 @@
 
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
+import AuthLayout from "./(components)/AuthLayout";
 
-const SignIn = () => {
+const SignUp = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    user: "",
+    name: "",
+    email: "",
     password: "",
-    "remember-me": false,
   });
   const [errorMsg, setErrorMsg] = useState("");
-  const router = useRouter();
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
     setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handleRememberMe = () =>
-    setFormData((prev) => ({
-      ...prev,
-      "remember-me": !formData["remember-me"],
-    }));
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const response = await fetch("/api/Users/signin", {
+    const response = await fetch("/api/Users/signup", {
       method: "POST",
       body: JSON.stringify({ formData }),
       headers: {
@@ -38,30 +33,42 @@ const SignIn = () => {
       const result = await response.json();
       setErrorMsg(result.message);
     } else {
-      router.refresh();
-      router.push("/");
+      console.log(response);
+      // router.refresh();
+      // router.push("/");
     }
   };
 
   return (
-    <>
+    <AuthLayout>
       <div className="flex items-center justify-center">
         <div className="w-full max-w-md space-y-6">
           <div className="space-y-2 text-center">
-            <h2 className="text-2xl font-bold">Sign In</h2>
+            <h2 className="text-2xl font-bold">Sign Up</h2>
             <p className="text-gray-600">
-              Enter your credentials to access your account
+              Enter your user name and email to register an account
             </p>
           </div>
           <form onSubmit={handleSubmit} method="post" className="space-y-4">
             <div className="space-y-2">
-              <label>Email/User Name</label>
+              <label>User Name</label>
               <input
-                value={formData.user}
+                name="name"
                 onChange={handleChange}
-                name="user"
+                value={formData.name}
                 className="w-full p-2 rounded-md border-2"
                 type="text"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label>Email</label>
+              <input
+                name="email"
+                onChange={handleChange}
+                value={formData.email}
+                className="w-full p-2 rounded-md border-2"
+                type="email"
                 required
               />
             </div>
@@ -69,36 +76,27 @@ const SignIn = () => {
               <label>Password</label>
               <input
                 name="password"
-                value={formData.password}
                 onChange={handleChange}
+                value={formData.password}
                 className="w-full p-2 rounded-md border-2"
                 type="password"
                 required
               />
             </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                onChange={handleRememberMe}
-                checked={formData["remember-me"]}
-                name="remember-me"
-              />
-              <label>Remember Me</label>
-            </div>
             <button
               type="submit"
               className="w-full p-2 bg-gray-900 text-gray-50 rounded-md"
             >
-              Sign In
+              Sign Up
             </button>
           </form>
           <p>
-            Don't have an account yet? <a href="/signup">Sign Up</a>.
+            Already have an account? <a href="/signin">Sign In</a>.
           </p>
         </div>
       </div>
-    </>
+    </AuthLayout>
   );
 };
 
-export default SignIn;
+export default SignUp;
