@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import User from "@/app/(models)/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import connectDB from "@/app/hooks/connectDB.js";
 export async function POST(req) {
+  await connectDB();
   try {
     const body = await req.json();
     const userData = body.formData;
@@ -36,7 +38,7 @@ export async function POST(req) {
     }
 
     const tokenData = {
-      id: user.id,
+      userId: user._id,
       name: user.name,
       email: user.email,
     };
@@ -62,7 +64,6 @@ export async function POST(req) {
     }
 
     response.cookies.set("token", token, cookieOptions);
-    response.cookies.set("userName", user.name)
     return response;
   } catch (error) {
     console.log(error);
