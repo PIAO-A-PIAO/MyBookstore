@@ -38,6 +38,7 @@ const SignIn = () => {
       const result = await response.json();
       setErrorMsg(result.message);
     } else {
+      const result = await response.json();
       router.refresh();
       router.push("/");
     }
