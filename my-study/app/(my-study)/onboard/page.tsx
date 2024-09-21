@@ -6,7 +6,7 @@ import StepFour from "@/app/(components)/(my-study)/(onboard)/StepFour";
 import StepFive from "@/app/(components)/(my-study)/(onboard)/StepFive";
 import StepSix from "@/app/(components)/(my-study)/(onboard)/StepSix";
 import React, { useEffect, useState } from "react";
-function page() {
+const Onboard = () => {
   const [stepNumber, setStepNumber] = useState(0);
   useEffect(() => {
     const res = JSON.parse(sessionStorage.getItem("stepNumber") || "{}");
@@ -28,7 +28,10 @@ function page() {
     setStepNumber(stepNumber + 1);
   };
 
-  
+  const finish = () => {
+    sessionStorage.removeItem("stepNumber");
+    setStepNumber(stepNumber+1)
+  }
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full bg-white">
@@ -52,12 +55,10 @@ function page() {
         <StepThree lastStep={lastStep} nextStep={nextStep} />
       )}
       {stepNumber === 4 && <StepFour lastStep={lastStep} nextStep={nextStep} />}
-      {stepNumber === 5 && (
-        <StepFive lastStep={lastStep} nextStep={nextStep} />
-      )}
-      {stepNumber === 6 && <StepSix lastStep={lastStep} />}
+      {stepNumber === 5 && <StepFive lastStep={lastStep} finish={finish} />}
+      {stepNumber === 6 && <StepSix/>}
     </div>
   );
-}
+};
 
-export default page;
+export default Onboard;

@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import connectDB from "@/app/hooks/connectDB";
 import User from "@/app/(models)/User";
+import Stamp from "@/app/(models)/Stamp";
 import { ObjectId } from "mongodb";
 
 export async function POST(req) {
+  await connectDB();
   try {
     const body = await req.json();
 
@@ -15,22 +17,38 @@ export async function POST(req) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
 
-    await connectDB();
-
     // Convert decoded.userId to ObjectId
     const userId = new ObjectId(decoded.userId);
     const user = await User.findById(userId); // This will now use the ObjectId
-
+    const defaultStamp = await Stamp.findOne({ name: "default" });
+    if (!defaultStamp) {
+      return NextResponse.json({ message: "Stamp not found" }, { status: 404 });
+    }
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
+    Object.assign(user, body);
+    user.onboarded = true;
+    user.stamps = [{ stampId: defaultStamp._id, number: 5 }];
 
-    console.log(user); // Log the user's name
+    await user.save();
+    const tokenData = {
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      onboarded: user.onboarded,
+    };
+    const newToken = jwt.sign(tokenData, process.env.TOKEN_SECRET, {
+      expiresIn: "1d",
+    });
 
-    return NextResponse.json(
-      { message: "User onboarded successfully", userName: user.userName },
+    const response = NextResponse.json(
+      { message: "User onboarded successfully" },
       { status: 200 }
     );
+
+    response.cookies.set("token", newToken);
+    return response;
   } catch (error) {
     console.error(error);
     return NextResponse.json(

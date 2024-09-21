@@ -1,21 +1,22 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../../../lib/connectDB";
+import connectDB from "@/app/hooks/connectDB";
 import jwt from "jsonwebtoken";
-import User from "../../../(models)/User";
+import User from "@/app/(models)/User";
 import { ObjectId } from "mongodb";
 
-export  async function GET(req) {
+export async function GET(req) {
+  await connectDB();
   try {
     const token = req.cookies.get("token");
     if (!token) {
-      return NextResponse({ message: "Token missing" }, { status: 404 });
+      return NextResponse.json({ message: "Token missing" }, { status: 404 });
     }
     const decoded = jwt.verify(token.value, process.env.TOKEN_SECRET);
     if (!decoded || !decoded.userId) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
-    await connectDB();
-    const user = await User.findById(decoded.userId);
+    const userId = new ObjectId(decoded.userId);
+    const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }

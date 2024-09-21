@@ -9,20 +9,24 @@ export async function middleware(req: NextRequest) {
   // Check if it's a public path and the user has a token
   if (isPublicPath && token) {
     try {
-      const response = await fetch("api/Users/onboarded", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Cookie: `token=${token.value}`, // Pass the token in cookies
-        },
-      });
+      const response = await fetch(
+        `${req.nextUrl.origin}/api/Users/onboarded`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Cookie: `token=${token.value}`, // Pass the token in cookies
+          },
+        }
+      );
       if (!response.ok) {
         console.error("Error fetching onboarded status.");
         return NextResponse.redirect(new URL("/404", req.nextUrl));
       }
 
       const result = await response.json();
+      console.log(result.onboarded);
       // Redirect based on onboarding status
       if (result.onboarded) {
         return NextResponse.redirect(new URL("/room", req.nextUrl));
@@ -39,8 +43,32 @@ export async function middleware(req: NextRequest) {
   if (!isPublicPath && !token) {
     return NextResponse.redirect(new URL("/", req.nextUrl));
   }
+
+  if (!isPublicPath && token) {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/Users/onboarded",
+        { headers: { Cookie: `token=${token.value}` } }
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        console.error("Error fetching onboarded status.");
+        return NextResponse.redirect(new URL("/404", req.nextUrl));
+      }
+
+      // Redirect based on onboarding status
+      if (!result.onboarded && path!=="/onboard") {
+        return NextResponse.redirect(new URL("/onboard", req.nextUrl));
+      }else if (result.onboarded && path==="/onboard") {
+        return NextResponse.redirect(new URL("/room", req.nextUrl));
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+      return NextResponse.redirect(new URL("/404", req.nextUrl));
+    }
+  }
 }
 
 export const config = {
-  matcher: ["/", "/signin", "/signup", "/room"],
+  matcher: ["/", "/signin", "/signup", "/room", "/onboard"],
 };

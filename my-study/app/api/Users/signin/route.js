@@ -6,6 +6,7 @@ import connectDB from "@/app/hooks/connectDB.js";
 export async function POST(req) {
   await connectDB();
   try {
+
     const body = await req.json();
     const userData = body.formData;
 

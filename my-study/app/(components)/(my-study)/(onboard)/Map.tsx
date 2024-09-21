@@ -21,7 +21,7 @@ const Map = ({
             selectedRegion === "lake" ? "stroke-2 stroke-black" : ""
           }`}
           onClick={() => {
-            onSelectRegion("lake");
+            onSelectRegion("lake"); 
           }}
         />
         <path

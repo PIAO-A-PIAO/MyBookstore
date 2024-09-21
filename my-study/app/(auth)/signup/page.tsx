@@ -20,6 +20,7 @@ const SignUp = () => {
   };
 
   const handleSubmit = async (e: FormEvent) => {
+
     e.preventDefault();
     const response = await fetch("/api/Users/signup", {
       method: "POST",
@@ -50,7 +51,7 @@ const SignUp = () => {
           </div>
           <form onSubmit={handleSubmit} method="post" className="space-y-4">
             <div className="space-y-2">
-              <label>User Name</label>
+              <label>Full Name</label>
               <input
                 name="name"
                 onChange={handleChange}

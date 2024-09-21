@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from "react";
 function StepFive({
   lastStep,
-  nextStep,
+  finish,
 }: {
   lastStep: () => void;
-  nextStep: () => void;
+  finish: () => void;
 }) {
   const [roomName, setRoomName] = useState<string>("");
   // Load initial data from sessionStorage
@@ -42,7 +42,7 @@ function StepFive({
       return;
     } else {
       sessionStorage.removeItem("formData");
-      nextStep();
+      finish();
     }
   }
 

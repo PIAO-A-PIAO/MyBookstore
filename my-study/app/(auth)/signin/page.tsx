@@ -26,13 +26,11 @@ const SignIn = () => {
     }));
 
   const handleSubmit = async (e: FormEvent) => {
+
     e.preventDefault();
     const response = await fetch("/api/Users/signin", {
       method: "POST",
       body: JSON.stringify({ formData }),
-      headers: {
-        "content-type": "application/json",
-      },
     });
     if (!response.ok) {
       const result = await response.json();

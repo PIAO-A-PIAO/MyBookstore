@@ -11,7 +11,7 @@ export function GET(req) {
     if (!decoded.userId) {
       return NextResponse.json({ message: "Token not valid" }, { status: 401 });
     } else {
-      return NextResponse.json({ message: "token is valid" }, { status: 200 });
+      return NextResponse.json({ message: "token is valid", onboarded:decoded.onboarded }, { status: 200 });
     }
   } catch (error) {
     console.error(error);
