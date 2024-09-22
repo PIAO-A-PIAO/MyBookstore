@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
-import { userReducer } from "./userSlice";
-import { letterReducer } from "./letterSlice";
+import { userReducer } from "./userSlice.js";
+import { letterReducer } from "./letterSlice.js";
 
 export const store = configureStore({
   reducer: { user: userReducer, letter: letterReducer },

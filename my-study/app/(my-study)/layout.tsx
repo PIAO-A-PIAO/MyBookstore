@@ -1,10 +1,10 @@
 import React from "react";
-import EmptyTopbar from "@/app/(components)/EmptyTopbar";
+import PrivateTopbar from "../(components)/(topbar)/PrivateTopbar";
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex">
       <div className="flex flex-col h-screen w-full">
-        <EmptyTopbar />
+        <PrivateTopbar/>
         {children}{" "}
       </div>
     </div>

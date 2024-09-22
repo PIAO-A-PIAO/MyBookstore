@@ -1,10 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 
-const stampSchema = ({
-  stampId: { type: String, required: true },
-  number: { type: Number, required: true }
-});
-
 const userSchema = new Schema(
   {
     name: String,
@@ -14,7 +9,7 @@ const userSchema = new Schema(
     userName: String,
     region: String,
     roomName: String,
-    stamps: [stampSchema],
+    stamps: [{ stampId: String, number: Number }],
     paperStyles: [String],
     contacts: [String],
     badges: [String],

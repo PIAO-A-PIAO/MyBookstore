@@ -1,7 +1,7 @@
 "use client"
 import React from "react";
 import GameCard from "./(components)/(home)/GameCard";
-import PublicTopbar from "./(components)/PublicTopbar";
+import PublicTopbar from "./(components)/(topbar)/PublicTopbar";
 
 const Home = () => {
   return (
