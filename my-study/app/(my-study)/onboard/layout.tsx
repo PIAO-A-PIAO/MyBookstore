@@ -1,5 +1,5 @@
 import React from "react";
-import PrivateTopbar from "../(components)/(topbar)/PrivateTopbar";
+import PrivateTopbar from "../../(components)/(topbar)/PrivateTopbar";
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex">
