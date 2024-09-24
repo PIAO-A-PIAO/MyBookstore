@@ -1,5 +1,5 @@
 import React from "react";
-import PublicTopbar from "../(components)/PublicTopbar";
+import PublicTopbar from "../(components)/(topbar)/PublicTopbar";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (

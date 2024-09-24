@@ -1,7 +1,6 @@
 "use client"
 import React from "react";
-import GameCard from "./(components)/(home)/GameCard";
-import PublicTopbar from "./(components)/PublicTopbar";
+import PublicTopbar from "./(components)/(topbar)/PublicTopbar";
 
 const Home = () => {
   return (
@@ -22,11 +21,7 @@ const Home = () => {
             </div>
           </div>
           <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <GameCard
-              name="Second Life"
-              description="Collaborate with others to write the life story of an imaginary character."
-              image=""
-            />
+
           </div>
         </div>
       </section>

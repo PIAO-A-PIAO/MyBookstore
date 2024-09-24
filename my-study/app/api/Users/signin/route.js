@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import User from "@/app/(models)/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import connectDB from "@/app/hooks/connectDB.js";
+import connectDB from "../../connectDB.js"
 export async function POST(req) {
   await connectDB();
   try {
+
     const body = await req.json();
     const userData = body.formData;
 
@@ -41,6 +42,7 @@ export async function POST(req) {
       userId: user._id,
       name: user.name,
       email: user.email,
+      onboarded: user.onboarded || false
     };
     const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET, {
       expiresIn: "1d",

@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/auth/[...nextauth]/route.ts", "app/api/auth/[...nextauth]/options.ts", "app/(components)/AuthProvider.tsx", "app/(components)/UserForm.jsx", "app/(pages)/(auth)/signin/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/auth/[...nextauth]/route.ts", "app/api/auth/[...nextauth]/options.ts", "app/(components)/AuthProvider.tsx", "app/(components)/UserForm.jsx", "app/(pages)/(auth)/signin/page.jsx", "app/(models)/User.js", "app/api/store/letterSlice.js"],
   "exclude": ["node_modules"]
 }
