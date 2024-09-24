@@ -26,7 +26,6 @@ export async function middleware(req: NextRequest) {
       }
 
       const result = await response.json();
-      console.log(result.onboarded);
       // Redirect based on onboarding status
       if (result.onboarded) {
         return NextResponse.redirect(new URL("/room", req.nextUrl));

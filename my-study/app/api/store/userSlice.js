@@ -2,18 +2,21 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
 const initialState = {
-  _id: "",
-  userName: "",
-  region: "",
-  virtualAddress: "",
-  zipCode: "",
-  stamps: [""],
-  paperStyles: [""],
-  contacts: [""],
-  badges: [""],
-  languages: [""],
-  profile:"",
-  onboarded: null,
+  initialized: false,
+  user: {
+    _id: "",
+    userName: "",
+    region: "",
+    virtualAddress: "",
+    zipCode: "",
+    stamps: [""],
+    paperStyles: [""],
+    contacts: [""],
+    badges: [""],
+    languages: [""],
+    profile: "",
+    onboarded: null,
+  },
 };
 
 export const userSlice = createSlice({
@@ -21,9 +24,10 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUserState: (state, action) => {
+      state.initialized = true;
       Object.keys(action.payload).forEach((key) => {
-        if (key in state) {
-          state[key] = action.payload[key];
+        if (key in state.user) {
+          state.user[key] = action.payload[key];
         }
       });
     },

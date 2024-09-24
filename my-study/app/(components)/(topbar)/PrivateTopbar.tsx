@@ -23,9 +23,9 @@ const PrivateTopbar = () => {
         <div className="flex gap-4 items-center">
           <LanguageSwitch/>
           <DarkModeButton/>
-          <ReduxProvider>
+          {/* <ReduxProvider> */}
             <ProfileButton />
-          </ReduxProvider>
+          {/* </ReduxProvider> */}
         </div>
       </div>
     </nav>

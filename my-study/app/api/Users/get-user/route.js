@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/app/hooks/connectDB";
+import connectDB from "../../connectDB.js"
 import jwt from "jsonwebtoken";
 import User from "@/app/(models)/User";
 import { ObjectId } from "mongodb";

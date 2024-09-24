@@ -1,20 +1,20 @@
-import React from 'react'
-import WritingArea from './WritingArea'
+import React, { useState } from "react";
+import WritingArea from "./WritingArea";
 
 function WriteLetterMiddle() {
   return (
     <div
-        id="middle"
-        className="flex w-full h-full items-center justify-between overflow-auto"
+      id="middle"
+      className="flex w-full h-full items-center justify-between overflow-auto"
+    >
+      <div
+        id="writing-area"
+        className="w-full h-full overflow-y-scroll no-scrollbar"
       >
-        <div
-          id="writing-area"
-          className="w-full h-full overflow-y-scroll no-scrollbar"
-        >
-          <WritingArea />
-        </div>
+        <WritingArea />
       </div>
-  )
+    </div>
+  );
 }
 
-export default WriteLetterMiddle
+export default WriteLetterMiddle;

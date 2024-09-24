@@ -1,24 +1,37 @@
 "use client";
 import ReduxProvider from "@/app/api/store/redux-provider";
-import { useAppDispatch } from "@/app/api/store/store";
-import { setUserState } from "@/app/api/store/userSlice.js";
+import { useAppDispatch, useAppSelector } from "@/app/api/store/store";
+import { selectUser, setUserState } from "@/app/api/store/userSlice.js";
 import React, { useEffect } from "react";
 
-function UserInfoCore({ user }: { user: any }) {
-  const dispatch = useAppDispatch();
+function UserInfoCore({ token }: { token: string | undefined }) {
+  const dispatch = useAppDispatch(); // Move hook outside of useEffect
+  const userInfo = useAppSelector(selectUser);
   useEffect(() => {
-    if (user) {
-      dispatch(setUserState(user));
+    if (!userInfo.initialized) {
+      const fetchData = async () => {
+        try {
+          const userRes = await fetch(`/api/Users/get-user`, {
+            headers: { Cookie: `token=${token}` },
+          });
+          const userData = await userRes.json();
+          dispatch(setUserState(userData.user)); // Dispatch the user fetched from API
+        } catch (error) {
+          console.error("Failed to fetch user:", error);
+        }
+      };
+      fetchData();
     }
-  }, [user, dispatch]);
-  return <></>;
+  }, [userInfo, token, dispatch]); // Add missing dependencies
+
+  return <></>; // Render can be expanded based on your needs
 }
 
-function UserInfo({ user }: { user: any }) {
+function UserInfo({ token }: { token: string | undefined }) {
   return (
-    <ReduxProvider>
-      <UserInfoCore user={user} />
-    </ReduxProvider>
+    // <ReduxProvider>
+      <UserInfoCore token={token} />
+    // </ReduxProvider>
   );
 }
 

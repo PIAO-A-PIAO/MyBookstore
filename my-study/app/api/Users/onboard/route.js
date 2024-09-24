@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import connectDB from "@/app/hooks/connectDB";
+import connectDB from "../../connectDB.js"
 import User from "@/app/(models)/User";
 import Stamp from "@/app/(models)/Stamp";
 import { ObjectId } from "mongodb";

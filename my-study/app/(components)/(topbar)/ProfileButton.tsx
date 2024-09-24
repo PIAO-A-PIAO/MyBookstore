@@ -4,8 +4,7 @@ import { useAppSelector } from "@/app/api/store/store";
 import { selectUser } from "@/app/api/store/userSlice.js";
 
 const ProfileButton = () => {
-  const user = useAppSelector(selectUser);
-
+  const user = useAppSelector(selectUser).user;
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef<any>();
   const [errorMsg, setErrorMsg] = useState("");
