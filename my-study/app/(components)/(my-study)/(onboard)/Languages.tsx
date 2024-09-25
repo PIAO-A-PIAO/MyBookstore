@@ -1,31 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import languages from "@/public/languageList.js";
 import LanguageButton from './LanguageButton';
+import { OnboardContext } from "@/app/(my-study)/(need-topbar)/onboard/page";
 
-function StepThree({ lastStep, nextStep }: { lastStep: () => void; nextStep: () => void }) {
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+function Languages({ lastStep, nextStep }: { lastStep: () => void; nextStep: () => void }) {
+  const onboardContext = useContext(OnboardContext);
+  
+  if (!onboardContext) {
+    throw new Error("OnboardContext not found");
+  }
+  
+  const { formData, setFormData } = onboardContext;
 
-  // Load initial selected languages from sessionStorage
-  useEffect(() => {
-    const formData = JSON.parse(sessionStorage.getItem("formData") || "{}");
-    if (formData.languages) {
-      setSelectedLanguages(formData.languages);
-    }
-  }, []);
-
+  // Handle language selection change
   const handleLanguageChange = (code: string) => {
-    setSelectedLanguages((prev) => 
-      prev.includes(code) 
-        ? prev.filter(lang => lang !== code) 
-        : [...prev, code]
-    );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      languages: prevFormData.languages.includes(code)
+        ? prevFormData.languages.filter((lang: string) => lang !== code)
+        : [...prevFormData.languages, code],
+    }));
   };
 
+  // Handle next step
   const handleNextStep = () => {
-    // Save selected languages to sessionStorage when "Next" is clicked
-    const formData = JSON.parse(sessionStorage.getItem("formData") || "{}");
-    formData.languages = selectedLanguages;
-    sessionStorage.setItem("formData", JSON.stringify(formData));
+    if (!formData.languages || formData.languages.length === 0) {
+      alert("Please select at least one language.");
+      return;
+    }
 
     nextStep(); // Proceed to the next step
   };
@@ -45,7 +47,7 @@ function StepThree({ lastStep, nextStep }: { lastStep: () => void; nextStep: () 
             key={lang.code}
             uri={lang.uri}
             name={lang.name}
-            isSelected={selectedLanguages.includes(lang.code)}
+            isSelected={formData.languages.includes(lang.code)} // Use formData.languages
             onChange={() => handleLanguageChange(lang.code)}
           />
         ))}
@@ -68,4 +70,4 @@ function StepThree({ lastStep, nextStep }: { lastStep: () => void; nextStep: () 
   );
 }
 
-export default StepThree;
+export default Languages;

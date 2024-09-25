@@ -13,13 +13,12 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-
     const duplicate = await User.findOne({
       $or: [{ email: userData.email }, { name: userData.name }],
     })
       .lean()
       .exec();
-
+    console.log(duplicate);
     if (duplicate) {
       return NextResponse.json({ message: "Duplicate Email" }, { status: 409 });
     }

@@ -1,51 +1,51 @@
 const languages = [
     {
-      code: "cn",
+      code: "cmn",
       name: "Chinese",
       uri: "./assets/national-flags/cn.svg",
     },
     {
-      code: "en",
+      code: "egn",
       name: "English",
       uri: "./assets/national-flags/gb.svg",
     },
     {
-      code: "fr",
+      code: "fra",
       name: "French",
       uri: "./assets/national-flags/fr.svg",
     },
     {
-      code: "de",
+      code: "deu",
       name: "German",
       uri: "./assets/national-flags/de.svg",
     },
     {
-      code: "ru",
+      code: "rus",
       name: "Russian",
       uri: "./assets/national-flags/ru.svg",
     },
     {
-      code: "es",
+      code: "spa",
       name: "Spanish",
       uri: "./assets/national-flags/es.svg",
     },
     {
-      code: "pt",
+      code: "ort",
       name: "Portuguese",
       uri: "./assets/national-flags/pt.svg",
     },
     {
-      code: "ar",
+      code: "arb",
       name: "Arabic",
       uri: "./assets/national-flags/ae.svg",
     },
     {
-      code: "jp",
+      code: "jpn",
       name: "Japanese",
       uri: "./assets/national-flags/jp.svg",
     },
     {
-      code: "kr",
+      code: "kor",
       name: "Korean",
       uri: "./assets/national-flags/kr.svg",
     },

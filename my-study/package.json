@@ -12,6 +12,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "bcrypt": "^5.1.1",
     "cookies-next": "^4.2.1",
+    "franc": "^6.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
     "mongoose": "^8.4.4",

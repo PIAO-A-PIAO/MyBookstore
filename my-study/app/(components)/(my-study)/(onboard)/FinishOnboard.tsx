@@ -1,7 +1,8 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 
-function StepSix() {
+function FinishOnboard
+() {
   const router = useRouter();
   return (
     <div className="text-center py-24 w-full h-full flex flex-col gap-8 items-center">
@@ -25,4 +26,5 @@ function StepSix() {
   );
 }
 
-export default StepSix;
+export default FinishOnboard
+;

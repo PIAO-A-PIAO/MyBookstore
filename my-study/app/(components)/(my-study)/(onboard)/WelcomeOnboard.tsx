@@ -1,6 +1,6 @@
 import React from "react";
 
-function StepOne( {nextStep}:{nextStep: () => void} ) {
+function WelcomeOnboard( {nextStep}:{nextStep: () => void} ) {
   return (
     <div className="text-center py-24 w-full h-full flex flex-col items-center gap-8">
       <div className="space-y-4 w-1/2">
@@ -20,4 +20,4 @@ function StepOne( {nextStep}:{nextStep: () => void} ) {
   );
 }
 
-export default StepOne;
+export default WelcomeOnboard;

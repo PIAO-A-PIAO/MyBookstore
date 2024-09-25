@@ -1,38 +1,37 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import Map from "./Map";
+import { OnboardContext } from "@/app/(my-study)/(need-topbar)/onboard/page";
 
-function StepFour({
+function Region({
   lastStep,
   nextStep,
 }: {
   lastStep: () => void;
   nextStep: () => void;
 }) {
-  const [region, setRegion] = useState<string | null>(null); // State for selected location
+  const onboardContext = useContext(OnboardContext);
 
-  useEffect(() => {
-    const formData = JSON.parse(sessionStorage.getItem("formData") || "{}");
-    // Set the location from formData if it exists
-    setRegion(formData.location || null);
-  }, []);
+  if (!onboardContext) {
+    throw new Error("OnboardContext not found");
+  }
 
+  const { formData, setFormData } = onboardContext;
+  
   // Function to handle location selection from the Map
   const handleSelectRegion = (selectedRegion: string) => {
-    setRegion(selectedRegion);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      region: selectedRegion, // Update region in formData
+    }));
   };
 
-  // Handle next step and save location to sessionStorage
+  // Handle next step
   const handleNextStep = () => {
-    if (!region) {
+    if (!formData.region) {
       alert("Please select a region on the map.");
       return;
     }
-
-    // Save the selected region to sessionStorage
-    const formData = JSON.parse(sessionStorage.getItem("formData") || "{}");
-    formData.region = region; // Save selected region
-    sessionStorage.setItem("formData", JSON.stringify(formData));
 
     nextStep();
   };
@@ -49,7 +48,7 @@ function StepFour({
       <div className="h-2/3 aspect-video">
         <Map
           onSelectRegion={handleSelectRegion}
-          selectedRegion={region}
+          selectedRegion={formData.region} // Use region from formData
         />
       </div>
       <div className="flex justify-between w-full px-16 py-6 fixed bottom-0">
@@ -70,4 +69,4 @@ function StepFour({
   );
 }
 
-export default StepFour;
+export default Region;

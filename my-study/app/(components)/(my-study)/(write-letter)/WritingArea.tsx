@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { ChangeEvent, useContext, useRef, useState } from "react";
 import { LetterContext } from "@/app/(my-study)/(letter)/layout";
 
@@ -8,7 +8,7 @@ function WritingArea() {
     throw new Error("WritingArea must be used within a LetterProvider");
   }
 
-  const { contents, setContents } = letterContext;
+  const { formData, setFormData, currentPage, setCurrentPage } = letterContext;
   const maxLines = 17;
 
   const hrElements = [];
@@ -17,14 +17,13 @@ function WritingArea() {
       <hr className="border-gray-900" style={{ height: "6cqmin" }} key={i} />
     );
   }
-  const [currentPage, setCurrentPage] = useState(0);
   const [shadowContent, setShadowContent] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const shadowTextareaRef = useRef<HTMLTextAreaElement>(null);
   const handleChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedContents = [...contents];
+    const updatedContents = [...formData.contents];
     updatedContents[currentPage] = e.target.value;
-    setContents(updatedContents);
+    setFormData((prevData) => ({ ...prevData, contents: updatedContents }));
     setShadowContent(e.target.value);
   };
   return (
@@ -45,7 +44,7 @@ function WritingArea() {
       </div>
       <textarea
         ref={textareaRef}
-        value={contents[currentPage]}
+        value={formData.contents[currentPage]}
         onChange={handleChangeContent}
         style={{
           fontSize: "2.5cqmin",

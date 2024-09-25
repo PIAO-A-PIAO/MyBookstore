@@ -1,7 +1,8 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
-import { useAppSelector } from "@/app/api/store/store";
-import { selectUser } from "@/app/api/store/userSlice.js";
+import { useAppDispatch, useAppSelector } from "@/app/api/store/store";
+import { resetUser, selectUser } from "@/app/api/store/userSlice.js";
+import { resetLetter } from "@/app/api/store/letterSlice";
 
 const ProfileButton = () => {
   const user = useAppSelector(selectUser).user;
@@ -9,6 +10,7 @@ const ProfileButton = () => {
   const dropdownRef = useRef<any>();
   const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -26,6 +28,8 @@ const ProfileButton = () => {
       const result = await response.json();
       setErrorMsg(result.message);
     } else {
+      dispatch(resetLetter());
+      dispatch(resetUser());
       router.push("/");
       router.refresh();
     }
@@ -54,7 +58,9 @@ const ProfileButton = () => {
         <div className="absolute right-0 mt-1 w-48 bg-white border rounded-lg shadow-lg">
           {user && (
             <>
-              <div className="w-full block px-4 py-2 text-gray-800">{user.userName}</div>
+              <div className="w-full block px-4 py-2 text-gray-800">
+                {user.userName}
+              </div>
               <div className="border-t border-gray-300 my-2"></div>
               <button className="w-full block px-4 py-2 text-gray-800 hover:bg-gray-100">
                 Profile Settings

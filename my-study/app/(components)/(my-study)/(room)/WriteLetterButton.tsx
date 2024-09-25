@@ -33,7 +33,7 @@ function WriteLetterButtonCore({ token }: { token: any }) {
   }, [draftsInfo, dispatch, token]);
   return (
     <a href="/write" className="bg-blue-600 p-4 text-white rounded-lg">
-      Unsent letters - this is a table
+      {draftsInfo.drafts.length} Unsent letters - this is a table
     </a>
   );
 }

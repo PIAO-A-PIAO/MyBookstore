@@ -3,13 +3,16 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   inbox: { initialized: false, inbox: [] },
   drafts: { initialized: false, drafts: [] },
-  current: {},
 };
 
 export const letterSlice = createSlice({
   name: "letter",
   initialState,
   reducers: {
+    resetLetter: () => initialState,
+    updateDrafts: (state) => {
+      state.drafts.initialized = false;
+    },
     setInboxState: (state, action) => {
       state.inbox.initialized = true;
       Object.assign(state.inbox.inbox, action.payload);
@@ -18,14 +21,10 @@ export const letterSlice = createSlice({
       state.drafts.initialized = true;
       Object.assign(state.drafts.drafts, action.payload);
     },
-    setCurrentState: (state, action) => {
-      Object.assign(state.current, action.payload);
-    },
   },
 });
-export const selectCurrentState = (state) => state.letter.current;
 export const selectInboxState = (state) => state.letter.inbox;
 export const selectDraftsState = (state) => state.letter.drafts;
-export const { setInboxState, setDraftsState, setCurrentState } =
+export const { updateDrafts, resetLetter, setInboxState, setDraftsState } =
   letterSlice.actions;
 export const letterReducer = letterSlice.reducer;

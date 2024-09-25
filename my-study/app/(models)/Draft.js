@@ -8,8 +8,6 @@ const draftSchema = new Schema(
     attachments: [String],
     title: String,
     stampUsed: String,
-    paperStyle: String,
-    language: String,
   },
   { timestamps: true }
 );

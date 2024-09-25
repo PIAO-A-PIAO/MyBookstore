@@ -1,31 +1,31 @@
 "use client";
 import { LetterContext } from "@/app/(my-study)/(letter)/layout";
-import {
-  selectCurrentState,
-  setCurrentState,
-} from "@/app/api/store/letterSlice";
+import { updateDrafts } from "@/app/api/store/letterSlice";
+
 import { useAppDispatch, useAppSelector } from "@/app/api/store/store";
+import { useRouter } from "next/navigation";
 import React, { useContext } from "react";
 
 function WriteLetterFooter({ token }: { token: string | undefined }) {
   const dispatch = useAppDispatch();
-
+  const router = useRouter();
   const letterContext = useContext(LetterContext);
   if (!letterContext) {
     throw new Error("WritingArea must be used within a LetterProvider");
   }
 
-  const { contents, setContents } = letterContext;
+  const { formData, setShowModal } = letterContext;
   const handleArchive = async () => {
     try {
-      dispatch(setCurrentState({ contents: contents }));
-      const draftData = useAppSelector(selectCurrentState);
       const draftRes = await fetch("/api/Letters/save-draft", {
         method: "POST",
-
-        body: draftData,
+        body: JSON.stringify(formData),
         headers: { Cookie: `token=${token}` },
       });
+      if (draftRes.status === 200) {
+        dispatch(updateDrafts());
+        setShowModal("archive")
+      }
     } catch (error) {}
   };
 

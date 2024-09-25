@@ -4,17 +4,16 @@ import { RootState } from "./store";
 const initialState = {
   initialized: false,
   user: {
-    _id: "",
+    _id:"",
+    profile: "",
     userName: "",
     region: "",
-    virtualAddress: "",
-    zipCode: "",
-    stamps: [""],
-    paperStyles: [""],
-    contacts: [""],
-    badges: [""],
-    languages: [""],
-    profile: "",
+    roomName: "",
+    stamps: [],
+    paperStyles: [],
+    contacts: [],
+    badges: [],
+    languages: [],
     onboarded: null,
   },
 };
@@ -23,6 +22,7 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    resetUser: () => initialState,
     setUserState: (state, action) => {
       state.initialized = true;
       Object.keys(action.payload).forEach((key) => {
@@ -36,5 +36,5 @@ export const userSlice = createSlice({
 
 export const selectUser = (state) => state.user;
 
-export const { setUserState } = userSlice.actions;
+export const { resetUser, setUserState } = userSlice.actions;
 export const userReducer = userSlice.reducer;

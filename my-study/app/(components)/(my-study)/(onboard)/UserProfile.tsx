@@ -1,20 +1,20 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import defaultProfile from "@/public/assets/profile.jpg"; // Ensure this path is correct
+import { OnboardContext } from "@/app/(my-study)/(need-topbar)/onboard/page";
 
-function StepTwo({ lastStep, nextStep }: { lastStep: () => void; nextStep: () => void }) {
-  const [profile, setProfile] = useState<string>(defaultProfile.src); // Initialize with default profile source
-  const [userName, setUserName] = useState<string>("");
-
-  // Load initial data from sessionStorage
-  useEffect(() => {
-    const formData = JSON.parse(sessionStorage.getItem("formData") || "{}");
-    if (formData) {
-      // Set profile from sessionStorage or use the default profile
-      setProfile(formData.profile || defaultProfile.src);
-      setUserName(formData.userName || "");
-    }
-  }, []);
+function UserProfile({
+  lastStep,
+  nextStep,
+}: {
+  lastStep: () => void;
+  nextStep: () => void;
+}) {
+  const onboardContext = useContext(OnboardContext);
+  if (!onboardContext) {
+    throw new Error("OnboardContext not found");
+  }
+  const { formData, setFormData } = onboardContext;
 
   // Handle profile upload
   const handleProfileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +22,10 @@ function StepTwo({ lastStep, nextStep }: { lastStep: () => void; nextStep: () =>
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfile(reader.result as string);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          profile: reader.result as string, // Update the profile field in formData
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -30,42 +33,42 @@ function StepTwo({ lastStep, nextStep }: { lastStep: () => void; nextStep: () =>
 
   // Handle username change
   const handleUserNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserName(event.target.value);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      userName: event.target.value, // Update the userName field in formData
+    }));
   };
 
   // Handle next step
   const handleNextStep = () => {
-    if (!userName) {
+    if (!formData.userName) {
       alert("Please provide a username.");
       return;
     }
 
-    // Save profile and username to sessionStorage when "Next" is clicked
-    const formData = JSON.parse(sessionStorage.getItem("formData") || "{}");
-    formData.profile = profile === defaultProfile.src ? defaultProfile.src : profile; // Keep selected or default profile
-    formData.userName = userName; // Save username
-    sessionStorage.setItem("formData", JSON.stringify(formData));
-
-    nextStep();
+    nextStep(); // Move to the next step
   };
 
   return (
     <div className="text-center py-24 w-full h-full flex flex-col items-center gap-8">
       <div className="space-y-4 w-1/2">
         <h1>Let us know who you are!</h1>
-        <p>Please select your profile profile and pseudonym. This will be shown to all your recipients!</p>
+        <p>
+          Please select your profile and pseudonym. This will be shown
+          to all your recipients!
+        </p>
       </div>
       <div className="flex flex-col items-center">
         <label htmlFor="profile-upload" className="cursor-pointer">
           <img
             className="h-32 w-32 rounded-full border-2 border-gray-300"
-            src={profile}
+            src={formData.profile || defaultProfile.src} // Use formData.profile or default profile
             alt="Profile"
           />
           <input
             id="profile-upload"
             type="file"
-            accept="profile/*"
+            accept="image/*"
             onChange={handleProfileUpload}
             className="hidden"
           />
@@ -73,7 +76,7 @@ function StepTwo({ lastStep, nextStep }: { lastStep: () => void; nextStep: () =>
         <input
           type="text"
           placeholder="Enter your name"
-          value={userName}
+          value={formData.userName || ""} // Use formData.userName
           onChange={handleUserNameChange}
           className="border border-gray-300 rounded py-2 px-4 my-4"
         />
@@ -96,4 +99,4 @@ function StepTwo({ lastStep, nextStep }: { lastStep: () => void; nextStep: () =>
   );
 }
 
-export default StepTwo;
+export default UserProfile;

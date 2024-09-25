@@ -1,48 +1,51 @@
 "use client";
-import React, { useState, useEffect } from "react";
-function StepFive({
+import React, { useContext, useState } from "react";
+import { OnboardContext } from "@/app/(my-study)/(need-topbar)/onboard/page";
+
+function RoomName({
   lastStep,
   finish,
 }: {
   lastStep: () => void;
   finish: () => void;
 }) {
-  const [roomName, setRoomName] = useState<string>("");
-  // Load initial data from sessionStorage
-  useEffect(() => {
-    const formData = JSON.parse(sessionStorage.getItem("formData") || "{}");
-    setRoomName(formData.roomName || "");
-  }, []);
+  const onboardContext = useContext(OnboardContext);
+
+  if (!onboardContext) {
+    throw new Error("OnboardContext not found");
+  }
+
+  const { formData, setFormData } = onboardContext;
+  const [roomName, setRoomName] = useState<string>(formData.roomName || "");
 
   // Handle input change
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRoomName(event.target.value);
   };
 
-  // Handle next step
+  // Handle next step and submit data
   async function handleNextStep() {
-    // Save study room name to sessionStorage
-    const formData = JSON.parse(sessionStorage.getItem("formData") || "{}");
-    formData.roomName = roomName;
-    sessionStorage.setItem("formData", JSON.stringify(formData));
+    // Update the formData with the room name
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      roomName,
+    }));
 
-    const completeFormData = JSON.parse(
-      sessionStorage.getItem("formData") || "{}"
-    );
-    const response = await fetch(`api/Users/onboard`, {
+    // Submit the complete form data
+    const response = await fetch(`/api/Users/onboard`, {
       method: "POST",
-      body: JSON.stringify(completeFormData),
+      body: JSON.stringify({ ...formData, roomName }), // Send updated formData
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
     });
+
     if (!response.ok) {
       console.error("Submit form failed");
       return;
     } else {
-      sessionStorage.removeItem("formData");
-      finish();
+      finish(); // Finish onboarding
     }
   }
 
@@ -79,4 +82,4 @@ function StepFive({
   );
 }
 
-export default StepFive;
+export default RoomName;
