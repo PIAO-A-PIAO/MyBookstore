@@ -1,7 +1,8 @@
 "use client";
 import ArchiveModal from "@/app/(components)/(my-study)/(write-letter)/(modals)/ArchiveModal";
 import BackModal from "@/app/(components)/(my-study)/(write-letter)/(modals)/BackModal";
-import { selectDraftsState } from "@/app/api/store/letterSlice";
+import SwitchModal from "@/app/(components)/(my-study)/(write-letter)/(modals)/SwitchModal";
+import  {selectDraftsState}  from "@/app/api/store/draftsSlice";
 import { useAppSelector } from "@/app/api/store/store";
 import React, { createContext, useState } from "react";
 
@@ -15,6 +16,8 @@ interface formDataProps {
 }
 
 interface LetterContextProps {
+  edited: boolean;
+  setEdited: React.Dispatch<React.SetStateAction<boolean>>;
   formData: formDataProps;
   setFormData: React.Dispatch<React.SetStateAction<formDataProps>>;
   currentPage: number;
@@ -67,13 +70,15 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   }
 
   const [formData, setFormData] = useState<formDataProps>(initialFormData);
-
   const [currentPage, setCurrentPage] = useState(0);
   const [showModal, setShowModal] = useState("");
+  const [edited, setEdited] = useState(false);
   return (
     // <ReduxProvider>
     <LetterContext.Provider
       value={{
+        edited,
+        setEdited,
         formData,
         setFormData,
         currentPage,
@@ -84,6 +89,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
     >
       {showModal === "back" && <BackModal />}
       {showModal === "archive" && <ArchiveModal />}
+      {showModal === "switch" && <SwitchModal />}
       {children}
     </LetterContext.Provider>
     // </ReduxProvider>

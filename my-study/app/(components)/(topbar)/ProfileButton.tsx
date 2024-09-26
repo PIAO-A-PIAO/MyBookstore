@@ -2,7 +2,10 @@ import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/api/store/store";
 import { resetUser, selectUser } from "@/app/api/store/userSlice.js";
-import { resetLetter } from "@/app/api/store/letterSlice";
+import { resetInbox } from "@/app/api/store/inboxSlice.js";
+import { resetDrafts } from "@/app/api/store/draftsSlice";
+import { resetToken } from "@/app/api/store/tokenSlice.js";
+import { useLazyLogoutQuery } from "@/app/api/apiSlice.js";
 
 const ProfileButton = () => {
   const user = useAppSelector(selectUser).user;
@@ -11,6 +14,7 @@ const ProfileButton = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const [logout, logoutRes] = useLazyLogoutQuery();
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -23,17 +27,19 @@ const ProfileButton = () => {
   };
 
   const handleLogOut = async () => {
-    const response = await fetch("/api/Users/logout");
-    if (!response.ok) {
-      const result = await response.json();
-      setErrorMsg(result.message);
-    } else {
-      dispatch(resetLetter());
+    logout(undefined);
+  };
+
+  useEffect(() => {
+    if (logoutRes.isSuccess) {
+      dispatch(resetToken());
       dispatch(resetUser());
+      dispatch(resetInbox());
+      dispatch(resetDrafts());
       router.push("/");
       router.refresh();
     }
-  };
+  }, [logoutRes]);
 
   useEffect(() => {
     if (dropdownVisible) {

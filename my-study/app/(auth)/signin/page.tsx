@@ -1,9 +1,13 @@
 "use client";
 
+import { useLazySigninQuery } from "@/app/api/apiSlice";
+import { useAppDispatch } from "@/app/api/store/store";
+import { setTokenState } from "@/app/api/store/tokenSlice";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 const SignIn = () => {
+  const [signin, signinRes] = useLazySigninQuery();
   const [formData, setFormData] = useState({
     user: "",
     password: "",
@@ -18,6 +22,7 @@ const SignIn = () => {
       [e.target.name]: e.target.value,
     }));
   };
+  const dispatch = useAppDispatch();
 
   const handleRememberMe = () =>
     setFormData((prev) => ({
@@ -26,21 +31,16 @@ const SignIn = () => {
     }));
 
   const handleSubmit = async (e: FormEvent) => {
-
     e.preventDefault();
-    const response = await fetch("/api/Users/signin", {
-      method: "POST",
-      body: JSON.stringify({ formData }),
-    });
-    if (!response.ok) {
-      const result = await response.json();
-      setErrorMsg(result.message);
-    } else {
-      const result = await response.json();
+    signin(JSON.stringify({ formData }));
+  };
+  useEffect(() => {
+    if (signinRes.isSuccess) {
+      dispatch(setTokenState(signinRes.currentData.token));
       router.refresh();
       router.push("/");
     }
-  };
+  }, [signinRes]);
 
   return (
     <>

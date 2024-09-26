@@ -7,7 +7,9 @@ export async function GET(req) {
   await connectDB();
   try {
     const token = req.cookies.get("token");
-
+    if (!token){
+      return NextResponse.json({message:"token not found"},{status: 404})
+    }
     const decoded = jwt.verify(token.value, process.env.TOKEN_SECRET);
 
     if (!decoded || !decoded.userId) {

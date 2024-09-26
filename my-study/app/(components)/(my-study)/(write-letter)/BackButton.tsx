@@ -8,9 +8,18 @@ function BackButton() {
   if (!letterContext) {
     throw new Error("NoLetterContext");
   }
-  const { showModal, setShowModal } = letterContext;
+  const { showModal, setShowModal, edited } = letterContext;
   return (
-    <button className="flex" onClick={() => setShowModal("back")}>
+    <button
+      className="flex"
+      onClick={() => {
+        if (edited) {
+          setShowModal("back");
+        } else {
+          router.back();
+        }
+      }}
+    >
       <img src="./assets/icons/left.svg" />
       Back
     </button>

@@ -8,7 +8,8 @@ function WritingArea() {
     throw new Error("WritingArea must be used within a LetterProvider");
   }
 
-  const { formData, setFormData, currentPage, setCurrentPage } = letterContext;
+  const { formData, setFormData, currentPage, setCurrentPage, setEdited } =
+    letterContext;
   const maxLines = 17;
 
   const hrElements = [];
@@ -21,6 +22,7 @@ function WritingArea() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const shadowTextareaRef = useRef<HTMLTextAreaElement>(null);
   const handleChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setEdited(true);
     const updatedContents = [...formData.contents];
     updatedContents[currentPage] = e.target.value;
     setFormData((prevData) => ({ ...prevData, contents: updatedContents }));

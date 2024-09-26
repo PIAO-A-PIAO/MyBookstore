@@ -11,11 +11,9 @@ export async function POST(req) {
 
     const token = req.cookies.get("token");
     const decoded = jwt.verify(token.value, process.env.TOKEN_SECRET);
-
     if (!decoded || !decoded.userId) {
       return NextResponse({ message: "Invalid token" }, { status: 401 });
     }
-    console.log(body);
     body.senderId = decoded.userId;
     if (body._id !== "") {
       const draftId = new ObjectId(body._id);

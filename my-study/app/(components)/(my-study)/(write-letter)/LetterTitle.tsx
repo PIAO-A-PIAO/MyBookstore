@@ -12,7 +12,7 @@ function LetterTitle({ switchDropdown }: { switchDropdown: () => void }) {
   if (!letterContext) {
     throw new Error("Invalid context");
   }
-  const { formData, setFormData } = letterContext;
+  const { formData, setFormData, setEdited } = letterContext;
 
   const [focused, setFocused] = useState(false);
   // Automatically focus on the input when it becomes editable
@@ -29,12 +29,13 @@ function LetterTitle({ switchDropdown }: { switchDropdown: () => void }) {
           <input
             ref={inputRef} // Assign the ref to the input element
             value={formData.title}
-            onChange={(e) =>
+            onChange={(e) => {
+              setEdited(true);
               setFormData((prevData) => ({
                 ...prevData,
                 title: e.target.value,
-              }))
-            }
+              }));
+            }}
             onBlur={() => {
               setFocused(false);
             }} // Blur event to switch back to non-editable state

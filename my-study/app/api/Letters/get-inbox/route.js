@@ -9,6 +9,9 @@ export async function GET(req) {
   try {
     // check identity
     const token = req.cookies.get("token");
+    if (!token){
+      return NextResponse.json({message:"token not found"},{status: 404})
+    }
     const decoded = jwt.verify(token.value, process.env.TOKEN_SECRET);
     if (!decoded || !decoded.userId) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });

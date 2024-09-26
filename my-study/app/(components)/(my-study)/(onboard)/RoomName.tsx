@@ -1,6 +1,7 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { OnboardContext } from "@/app/(my-study)/(need-topbar)/onboard/page";
+import { useLazyOnboardQuery } from "@/app/api/apiSlice";
 
 function RoomName({
   lastStep,
@@ -17,7 +18,7 @@ function RoomName({
 
   const { formData, setFormData } = onboardContext;
   const [roomName, setRoomName] = useState<string>(formData.roomName || "");
-
+  const [onboard, onboardRes] = useLazyOnboardQuery();
   // Handle input change
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRoomName(event.target.value);
@@ -30,24 +31,14 @@ function RoomName({
       ...prevFormData,
       roomName,
     }));
-
-    // Submit the complete form data
-    const response = await fetch(`/api/Users/onboard`, {
-      method: "POST",
-      body: JSON.stringify({ ...formData, roomName }), // Send updated formData
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      console.error("Submit form failed");
-      return;
-    } else {
-      finish(); // Finish onboarding
-    }
+    onboard(JSON.stringify({ ...formData, roomName }));
   }
+
+  useEffect(() => {
+    if (onboardRes.isSuccess) {
+      finish();
+    }
+  }, [onboardRes]);
 
   return (
     <div className="text-center py-24 w-full h-full flex flex-col gap-8 items-center">

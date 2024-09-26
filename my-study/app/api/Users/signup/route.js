@@ -18,7 +18,6 @@ export async function POST(req) {
     })
       .lean()
       .exec();
-    console.log(duplicate);
     if (duplicate) {
       return NextResponse.json({ message: "Duplicate Email" }, { status: 409 });
     }
@@ -29,7 +28,7 @@ export async function POST(req) {
     await User.create(userData);
     return NextResponse.json({ message: "User Created." }, { status: 201 });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
 }

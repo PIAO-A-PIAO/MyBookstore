@@ -51,6 +51,7 @@ export async function POST(req) {
     const response = NextResponse.json(
       {
         message: "Login successful",
+        token: token,
       },
       { status: 200 }
     );
@@ -68,7 +69,7 @@ export async function POST(req) {
     response.cookies.set("token", token, cookieOptions);
     return response;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json({ message: "Error", error }, { status: 500 });
   }
 }

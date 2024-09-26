@@ -1,44 +1,48 @@
 "use client";
 import { LetterContext } from "@/app/(my-study)/(letter)/layout";
-import { updateDrafts } from "@/app/api/store/letterSlice";
-
-import { useAppDispatch, useAppSelector } from "@/app/api/store/store";
+import { useSaveDraftMutation } from "@/app/api/apiSlice";
+import { useAppDispatch } from "@/app/api/store/store";
 import { useRouter } from "next/navigation";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 function WriteLetterFooter({ token }: { token: string | undefined }) {
   const dispatch = useAppDispatch();
+  const [saveDraft, { isLoading, isError, data: saveDraftRes }] = useSaveDraftMutation();
   const router = useRouter();
   const letterContext = useContext(LetterContext);
+  
   if (!letterContext) {
-    throw new Error("WritingArea must be used within a LetterProvider");
+    throw new Error("No LetterContext");
   }
 
-  const { formData, setShowModal } = letterContext;
+  const { formData, setShowModal, setEdited } = letterContext;
+
   const handleArchive = async () => {
     try {
-      const draftRes = await fetch("/api/Letters/save-draft", {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { Cookie: `token=${token}` },
-      });
-      if (draftRes.status === 200) {
-        dispatch(updateDrafts());
-        setShowModal("archive")
-      }
-    } catch (error) {}
+      await saveDraft(JSON.stringify(formData)).unwrap();
+    } catch (error) {
+      console.error('Failed to save draft: ', error);
+    }
   };
 
-  const handleDiscard = () => {};
+  useEffect(() => {
+    if (saveDraftRes) {
+      setEdited(false);
+      setShowModal("archive");
+    }
+  }, [saveDraftRes, setEdited, setShowModal]);
 
+  const handleDiscard = () => {};
   const handleSend = () => {};
+
   return (
     <div id="footer" className="w-full flex py-4 px-8 border-t justify-between">
       <button
         className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none"
         onClick={handleArchive}
+        disabled={isLoading} // Disable while loading
       >
-        Archive
+        {isLoading ? "Saving..." : "Archive"}
       </button>
       <div>
         <button
@@ -54,6 +58,7 @@ function WriteLetterFooter({ token }: { token: string | undefined }) {
           Send
         </button>
       </div>
+      {isError && <div>Error saving draft.</div>}
     </div>
   );
 }

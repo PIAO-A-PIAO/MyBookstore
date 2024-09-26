@@ -1,10 +1,12 @@
 "use client";
 
+import { useLazySignupQuery } from "@/app/api/apiSlice";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 const SignUp = () => {
   const router = useRouter();
+  const [signup, signupRes] = useLazySignupQuery();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,24 +22,15 @@ const SignUp = () => {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-
     e.preventDefault();
-    const response = await fetch("/api/Users/signup", {
-      method: "POST",
-      body: JSON.stringify({ formData }),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      const result = await response.json();
-      setErrorMsg(result.message);
-    } else {
-      console.log(response);
-      // router.refresh();
-      // router.push("/");
-    }
+    signup(JSON.stringify({ formData }));
   };
+
+  useEffect(() => {
+    if (signupRes.isSuccess) {
+      router.push("/signin");
+    }
+  }, [signupRes]);
 
   return (
     <>
